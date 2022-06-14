@@ -16,6 +16,9 @@
     "morgan": "~1.9.1",
     "tinycolor2": "^1.4.1",
     "uuid": "^3.3.3",
-    "watchify": "^3.11.1"
+    "watchify": "^4.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.7.3"
   }
 }
