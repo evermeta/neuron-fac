@@ -21,6 +21,10 @@ export class DataSet implements DataSetType {
     }
 }
 
+/*export class Histogram {
+    private dataSet: DataSet; 
+}*/
+
 export class Probability {
 
     public value: number; 

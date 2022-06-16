@@ -1,4 +1,4 @@
-import { Percentage, Probability } from "../utils/math/types";
+import { DataSet, Percentage, Probability } from "../utils/math/types";
 
 
 type FitnessScore = number; 
@@ -21,7 +21,7 @@ export type Allele = {
 }
 
 export interface GenePoolType {
-    readonly alleles: Allele[]; 
+    readonly alleles: DataSet; 
 }
 
 export interface PopulationType {
