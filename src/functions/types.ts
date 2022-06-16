@@ -1,4 +1,4 @@
 export type ObjFunction = {
-    funcBody: string; 
-    returnType: string; 
-} 
+    funcBody: string;
+    returnType: string;
+};

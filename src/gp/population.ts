@@ -1,15 +1,22 @@
-import { PopulationType } from "./types";
+import { GenePool } from "./gene-pool-class";
+import { GenePoolType, PopulationType, Species } from "./types";
 
 /***********************************
- * A population is composed of: 
+ * A population is composed of:
  *  - A species id
  *  - A map: keys: genotype value:genostatu
- */ 
- class Population implements PopulationType{
+ */
+export class Population implements PopulationType {
+    public readonly genePool: GenePoolType;
+    public readonly species: Species;
 
- }
- 
- /*= (function(){
+    constructor(species: Species) {
+        this.genePool = new GenePool([]);
+        this.species = species;
+    }
+}
+
+/*= (function(){
     let _populationProto, populationInfo; 
 
     populationInfo = function({speciesId, ancestorID}){

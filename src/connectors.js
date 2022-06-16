@@ -1,32 +1,27 @@
 /*******************************************
  * connectors.js
  *
- * a "connector" is a typed tree node. 
- * It has two children, which can be 
- * connectors, plugs, or types. 
+ * a "connector" is a typed tree node.
+ * It has two children, which can be
+ * connectors, plugs, or types.
  * ****************************************/
 
-const types = require('./types.js').types;
+const types = require("./types.js").types;
 
-const connectors = (function(){
-
-    return{
-        Connector : function({left, right}){
+const connectors = (function () {
+    return {
+        Connector: function ({ left, right }) {
             this.leftNode = left;
             this.rightNode = right;
-            this.type = function(){
-                return left.type(right)
-            }
-        }
-    }
+            this.type = function () {
+                return left.type(right);
+            };
+        },
+    };
 })();
 
-connectors.Connector.prototype = {
-    
-
-}
+connectors.Connector.prototype = {};
 
 module.exports = {
-   connectors 
-}
-
+    connectors,
+};

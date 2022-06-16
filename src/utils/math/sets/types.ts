@@ -1,11 +1,10 @@
-
-export type ValueType = Record<string, unknown>; 
+export type ValueType = Record<string, unknown>;
 
 export type SetElement = {
-    value: ValueType;  
-    isSame: (e:SetElement | ValueType)=>boolean; 
-}
+    value: ValueType;
+    isSame: (e: SetElement | ValueType) => boolean;
+};
 
 export interface Set {
-    includes: (e1: SetElement | ValueType)=>boolean; 
+    includes: (e1: SetElement | ValueType) => boolean;
 }

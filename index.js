@@ -1,9 +1,11 @@
 "use strict";
 exports.__esModule = true;
 exports.hello = void 0;
-var world = 'world';
+var world = "world";
 function hello(who) {
-    if (who === void 0) { who = world; }
+    if (who === void 0) {
+        who = world;
+    }
     return "hellow ".concat(who);
 }
 exports.hello = hello;
