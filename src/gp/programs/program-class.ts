@@ -57,10 +57,13 @@ export class TypedObject extends ObjectWithUUID {
     readonly typeSignature: TypeSignature;
     public readonly inputs: ProgramArguments;
 
-    constructor(inputs: ProgramArguments) {
+    constructor(
+        inputs: ProgramArguments, 
+        outputType: string
+        ){
         super();
         this.inputs = inputs;
-        this.typeSignature = getSignature(this.inputs, 'ProgramOutputType');
+        this.typeSignature = getSignature(this.inputs, outputType);
     }
 
     toString(){
@@ -73,24 +76,27 @@ export class Program extends TypedObject implements ProgramType {
     public readonly speciesID: string | undefined;
     /**********************************************************************/
     public readonly code: Code;
-    public readonly language: string;
     public compiledVersion: ExecProcess | null = null;
 
     constructor( 
-        language: string, 
+        public readonly language: string, 
         inputs: ProgramArguments = {}, 
+        outputType = 'ProgramOutputType',
         code: Code | string, 
-        options: {speciesID?: string}= {}
+        options: {
+            speciesID?: string
+        }= {}
     ) {
-        /**********************************************************************/
-        super(inputs);
+
+        super(inputs, outputType);
 
         if("speciesID" in options && options.speciesID !== undefined) {
             this.speciesID = options["speciesID"];
         }
 
-        this.language = language; 
-        this.code = typeof code === "string" ? {unprocessedCode: code} : code;
+        this.code = typeof code === "string" 
+            ? {unprocessedCode: code} 
+            : code;
     }
 
     toString() {

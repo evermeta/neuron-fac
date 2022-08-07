@@ -15,9 +15,13 @@ describe("TestSuite class", () => {
             }
             throw "error";
         };
-        const program = new Program("js", {}, {
-            unprocessedCode: "return 3;"
-        });
+        const program = new Program(
+            "js", {}, 
+            "number",
+            {
+                unprocessedCode: "return 3;"
+            });
+
         const execProcess = compiler(program.code.unprocessedCode, program.language);
         const testFuncOne = (p: Program) =>
             (execProcess([]) as number) < 4 ? new Percentage(0) : new Percentage(100);
