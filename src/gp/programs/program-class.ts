@@ -1,6 +1,8 @@
-import { TypeSignature } from "./type-signatures";
+import { TypeSignature } from "./program-arguments/type-signatures";
 import { ObjectWithUUID } from "../../utils/uuid";
 import { ExecProcess } from "./compilers";
+import { ProgramArguments } from "./program-arguments/types";
+import { getSignature } from "./program-arguments/get-signature";
 /*****************************************************************************
  * A program's genotype is the set of genes that it carries,
  * and the blueprint by which they are combined (its species).
@@ -37,7 +39,12 @@ import { ExecProcess } from "./compilers";
 * *****************************************************************************/
 
 export type ProgramReturnType = number;
-export type Code = string;
+
+export type Code = {
+    unprocessedCode: string;
+    preProcessor?: (args: ProgramArguments, unprocessedCode: string)=>string;
+}
+
 
 export interface ProgramType {
     readonly language?: string;
@@ -45,43 +52,64 @@ export interface ProgramType {
     readonly code: Code;
 }
 
-export type ProgramArguments = Record<string, { index: number; type: string }>;
+export class TypedObject extends ObjectWithUUID {
 
-const _getSignature = (progArguments: ProgramArguments): string => {
-    const argNames = Object.keys(progArguments);
-    if (argNames.length === 0) {
-        return "()";
+    readonly typeSignature: TypeSignature;
+    public readonly inputs: ProgramArguments;
+
+    constructor(inputs: ProgramArguments) {
+        super();
+        this.inputs = inputs;
+        this.typeSignature = getSignature(this.inputs, 'ProgramOutputType');
     }
-    const sortedArgNames = argNames.sort(
-        (arg1, arg2) => progArguments[arg1].index - progArguments[arg2].index
-    );
-    return sortedArgNames.map((argName) => progArguments[argName].type).join(" => ");
-};
 
-export class Program extends ObjectWithUUID implements ProgramType {
+    toString(){
+        return `//Type Signature: ${this.typeSignature}`;
+    }
+} 
+
+export class Program extends TypedObject implements ProgramType {
 
     public readonly speciesID: string | undefined;
     /**********************************************************************/
-    public readonly typeSignature: string;
     public readonly code: Code;
     public readonly language: string;
-    public readonly inputs: ProgramArguments;
     public compiledVersion: ExecProcess | null = null;
 
     constructor( 
         language: string, 
         inputs: ProgramArguments = {}, 
-        code: Code, 
+        code: Code | string, 
         options: {speciesID?: string}= {}
     ) {
         /**********************************************************************/
-        super();
+        super(inputs);
+
         if("speciesID" in options && options.speciesID !== undefined) {
             this.speciesID = options["speciesID"];
         }
-        this.inputs = inputs;
-        this.code = code;
-        this.language = language;
-        this.typeSignature = `${_getSignature(this.inputs)} => ProgramOutputType`;
+
+        this.language = language; 
+        this.code = typeof code === "string" ? {unprocessedCode: code} : code;
+    }
+
+    toString() {
+       
+        const format = (code: string) => {
+            return [
+                `const ${this.ID} = (a) => {`,
+                ...code.split("\n"), 
+            ].join('\n\t') + '\n}';
+        }; 
+
+        const code = this.code.preProcessor
+            ? format(this.code.preProcessor(this.inputs, this.code.unprocessedCode))
+            : `//UnprocessedCode: ${this.code.unprocessedCode}`; 
+
+        return [
+            super.toString(),
+            `//Program Language: ${this.language}`,
+            `${code}`,
+        ].join("\n");
     }
 }

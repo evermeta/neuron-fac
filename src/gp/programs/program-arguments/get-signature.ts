@@ -1,3 +1,4 @@
+import { TypeSignature } from "./type-signatures";
 import { ProgramArguments } from "./types";
 
 /********************************************************************************
@@ -6,7 +7,8 @@ Program arguments are the set of arguments that a program takes, indexed by posi
 
 export const getSignature = (
     progArguments: ProgramArguments, 
-    returnType: string): string => {
+    returnType: string
+    ): TypeSignature => {
 
     const argNames = Object.keys(progArguments);
     if (argNames.length === 0) {

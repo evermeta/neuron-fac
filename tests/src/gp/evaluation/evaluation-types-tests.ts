@@ -5,6 +5,7 @@ import { Percentage } from "../../../../src/utils/math/proportions/types";
 
 describe("TestSuite class", () => {
     it("It evaluates a program", () => {
+
         const compiler = (code: string, language: string) => {
             if (language === "js") {
                 return (context: unknown) => {
@@ -14,8 +15,10 @@ describe("TestSuite class", () => {
             }
             throw "error";
         };
-        const program = new Program("js", {}, "return 3;");
-        const execProcess = compiler(program.code, program.language);
+        const program = new Program("js", {}, {
+            unprocessedCode: "return 3;"
+        });
+        const execProcess = compiler(program.code.unprocessedCode, program.language);
         const testFuncOne = (p: Program) =>
             (execProcess([]) as number) < 4 ? new Percentage(0) : new Percentage(100);
         const testFuncTwo = (p: Program) =>
