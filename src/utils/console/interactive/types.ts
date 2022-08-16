@@ -1,15 +1,15 @@
 import * as readline from "readline";
-
-export interface Console {
-    promptUser: () => Promise<void>;
-}
+import { Console } from "../types";
+import { Command, Payload } from "../../commands/types";
 
 export class ConsoleInteractive implements Console {
     private prompt: string;
     private readline: readline.Interface;
+    private commands: Command[];
 
-    constructor(prompt = "> ") {
+    constructor(prompt = "> ", commands: Command[] = []) {
         this.prompt = prompt;
+        this.commands = commands;
         this.readline = readline.createInterface({
             input: process.stdin,
             output: process.stdout,
@@ -20,9 +20,20 @@ export class ConsoleInteractive implements Console {
         });
     }
 
+    async executeCommand(command: Command): Promise<Payload> {
+        const payload = await command.action();
+        return payload;
+    }
+
     async process(cmd: string): Promise<void> {
-        if (cmd === ":x" || cmd === "quit") return this.readline.close();
-        console.log(`[Sorry, I don't understand '${cmd}']`);
+        const cmdObject = this.commands.find((command) => command.name === cmd);
+        if (cmdObject !== undefined) {
+            await this.executeCommand(cmdObject);
+        } else if (cmd === ":x" || cmd === "quit") {
+            return this.readline.close();
+        } else {
+            console.log(`[Sorry, I don't understand '${cmd}']`);
+        }
         return this.promptUser();
     }
 

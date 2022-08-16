@@ -1,5 +1,8 @@
 import { DataPoint } from "../statistics/data-point-class";
 
+type XY = { x: number; y: number };
+
+
 export type StochasticProcessType = {
     dataPoints: DataPoint[];
     newDataPoint: () => DataPoint;
@@ -24,7 +27,9 @@ export class StochasticProcess implements StochasticProcessType {
         while (this.dataPoints.length < size) {
             this.dataPoints.push(this.newDataPoint());
         }
-        const result = this.dataPoints.map((dp) => this.inFunction(dp)).filter((x) => x === true);
-        return result.length / this.dataPoints.length;  
+        const result = this.dataPoints
+            .map((dp) => this.inFunction(dp))
+            .filter((x) => x === true);
+        return result.length / this.dataPoints.length;
     }
 }

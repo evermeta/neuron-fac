@@ -1,19 +1,13 @@
-import { SetElement } from "../sets/types";
+import { SetElement, ValueType } from "../sets/types";
 
-type DataPointValue = DataPoint | Record<string, unknown>;
-const cpy = (obj: Record<string, unknown>): Record<string, unknown> =>
-    JSON.parse(JSON.stringify(obj));
+export class DataPoint extends SetElement {
 
-export class DataPoint implements SetElement {
-    public value: Record<string, unknown>;
-
-    constructor(data: DataPointValue) {
-        this.value = cpy(data instanceof DataPoint ? data.value : data);
+    constructor(data: ValueType) {
+        super(data);
     }
 
-    public isSame(x: DataPointValue): boolean {
-        if (x instanceof DataPoint)
-            return JSON.stringify(this.value) === JSON.stringify(x.value);
-        return JSON.stringify(this.value) === JSON.stringify(x);
+    getProperty(propertyName: string): unknown {
+        if (this.value[propertyName] === undefined) throw "Invalid property name";
+        return this.value[propertyName];
     }
 }
