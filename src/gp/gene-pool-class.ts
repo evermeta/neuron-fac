@@ -9,7 +9,7 @@
 
 import { ValueType } from "../utils/math/sets/types";
 import { DataPoint } from "../utils/math/statistics/data-point-class";
-import { DataSet } from "../utils/math/types";
+import { DataSet } from "../utils/math/statistics/data-set-class";
 import { GenePoolType } from "./types";
 
 //const uuidv4 = require('uuid/v4')
@@ -20,5 +20,8 @@ export class GenePool implements GenePoolType {
     public readonly alleles: DataSet;
     constructor(initSet: ValueType[]) {
         this.alleles = new DataSet(toDataSet(initSet));
+    }
+    evolve(): Promise<void> {
+        throw new Error("Method not implemented.");
     }
 }

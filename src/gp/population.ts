@@ -1,39 +1,49 @@
-import { GenePool } from "./gene-pool-class";
-import { GenePoolType, PopulationType, Species } from "./types";
-
+import { Program } from "./programs/program-class";
+import { EvaluationGrade, GenePoolType} from "./types";
+import {Species} from "./species";
+import {ObjectWithUUID} from "../utils/uuid";
+    
 /***********************************
  * A population is composed of:
  *  - A species id
  *  - A map: keys: genotype value:genostatu
  */
-export class Population implements PopulationType {
-    public readonly genePool: GenePoolType;
-    public readonly species: Species;
-
-    constructor(species: Species) {
-        this.genePool = new GenePool([]);
-        this.species = species;
-    }
+ export interface PopulationType {
+    genePool: GenePoolType;
+    species: Species;
 }
 
-/*= (function(){
-    let _populationProto, populationInfo; 
+export type SelectionFunction = (
+    population: { programIndex: number; evaluationGrade: EvaluationGrade }[],
+    selectionSize: number
+) => Program[];
 
-    populationInfo = function({speciesId, ancestorID}){
+export type EvaluationFunction = (program: Program[]) => Promise<EvaluationGrade[]>;
 
+
+export type ReplacementFunction = (
+    population: Program[],
+    newGeneration: Program[]
+) => Program[];
+
+export class PopulationPrototype extends  ObjectWithUUID {
+
+    protected _population: Program[] = [];
+
+    constructor() {
+        super(); 
+    }
+    get populationSize(): number {
+        return this._population.length;
     }
 
-    _populationProto = {
-        _programs: [ ], 
-        _specie: undefined 
+    addProgram(...programs: Program[]): void {
+        programs.forEach(program => {
+            this._population.push(program);
+        });
     }
 
-    return{
-        Population: function(){
-            this.uuid = uuidv4(); 
-        }, 
-        newPopulation: function(){
-            return new population.Population();
-        }
+    async evaluateAll(evaluationFunction: EvaluationFunction): Promise<EvaluationGrade[]> {
+        return await evaluationFunction(this._population);
     }
-})(); */
+}
