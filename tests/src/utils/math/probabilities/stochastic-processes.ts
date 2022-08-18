@@ -17,7 +17,27 @@ const randomDataPointFunction2 = newRandomDataPointFunction({
     x: { generate: generateFromZeroToOne, type: "number" },
     y: { generate: generateFromZeroToOne, type: "number" }
 }); 
-/*
+
+describe("StochasticProcess class", () => {
+
+    const inFunction = (point: DataPoint) =>
+    radius(point.getProperty("x") as number, point.getProperty("y") as number) <= 1;
+
+    const stochasticProcess = new StochasticProcess(randomDataPointFunction, inFunction);
+
+    it(`is constructed with 2 arguments. The first argument is a function that generates 
+    new data point`, () => {
+        expect(stochasticProcess).to.be.an.instanceof(StochasticProcess);
+    }); 
+
+    it(`It has an 'execute' method that creates a number of new datapoints
+     from a 'size' number input`, () => {
+        expect(stochasticProcess.execute).to.be.a("function");
+        stochasticProcess.execute(10);
+        expect(stochasticProcess.dataPoints.length).to.equal(10);
+    }); 
+}); 
+
 describe("StochasticProcess class", () => {
     const piDataPointsNumber = 600;
 
@@ -51,4 +71,3 @@ describe("StochasticProcess class", () => {
         expect(res).to.be.greaterThan(0.46 - errorMargin);
     });
 });
-*/
