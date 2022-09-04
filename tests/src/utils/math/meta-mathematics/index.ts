@@ -1,14 +1,15 @@
 import { expect } from "chai";
+import * as ProofTypes from "../../../../../src/utils/math/meta-mathematics/types";
 import * as ItemsToTest from "../../../../../src/utils/math/meta-mathematics/index";
 
-const identity = (A: ItemsToTest.Sentence) => {
+const identity = (A: ProofTypes.Sentence) => {
     return A;
 }; 
 
 const modusPonens = (
 
-    A: ItemsToTest.Sentence, 
-    B: ItemsToTest.Sentence ) => {
+    A: ProofTypes.Sentence, 
+    B: ProofTypes.Sentence ) => {
 
         const AElements = A.split('=>');
         if(AElements.length !== 2) throw new Error(
@@ -23,7 +24,7 @@ describe("The 'verifyProof function", () => {
   
    it("It returns true when the proof is valid (example 1)", () => {
 
-        const p: ItemsToTest.IProof = {
+        const p: ProofTypes.IProof = {
 
             axioms: ["D", "D=>C"],
             productionRules: [identity, modusPonens],
@@ -42,7 +43,7 @@ describe("The 'verifyProof function", () => {
    
     it("It returns true when the proof is valid (example 2)", () => {
 
-        const p: ItemsToTest.IProof = {
+        const p: ProofTypes.IProof = {
             axioms: ["D", "D=>C"],
             productionRules: [modusPonens],
             derivations: [ 
@@ -59,7 +60,7 @@ describe("The 'verifyProof function", () => {
     });
 
     it("It returns true when the proof is valid (example 3)", () => {
-        const p: ItemsToTest.IProof = {
+        const p: ProofTypes.IProof = {
             axioms: ["D", "D=>C", "C=>A"],
             productionRules: [modusPonens],
             derivations: [ 
@@ -80,7 +81,7 @@ describe("The 'verifyProof function", () => {
     });
 
     it("It returns false when the proof is not valid", () => {
-        const p: ItemsToTest.IProof = {
+        const p: ProofTypes.IProof = {
             axioms: ["A", "A=>E"],
             productionRules: [modusPonens],
             derivations: [ {

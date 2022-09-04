@@ -1,68 +1,57 @@
+/*******************************************************************************
+ *  FranckEinstein90 made this
+ *  IProof interface, models a sequential deduction
+*******************************************************************************/
 
-/************************************************************************************************************************ 
-A proof is a set of input sentences 'axioms' combined with a set of input production rules called 'productionRules' 
-combined with an index set of sentences 'derivedSentences'. Each sentence s_i in 'derivedSentences' is either
+import { 
+    DerivationArgument, Sentence,
+    Sentences, IProof, 
+    lastSentence, Derivation, Index
+} from "./types";
 
-a) an axiom (element of 'axioms'), or
-b) the result of the application of a production rule in 'productionRules' applied to a subset of sentences 
-    {s_j: j < i and s_j is in 'derivedSentences'} 
+/******************************************************************************/
+const _derivationArguments = ( 
+        derivation                      : Derivation, 
+        axioms                          : Sentences, 
+        previousDerivationConclusions   : Sentences
+    ): Sentences => 
 
-The last sentence in the proof is the conclusion of the proof.
-************************************************************************************************************************/
-
-type Index = number;
-export type Sentence = string;
-export type ProductionRule = (...args: Sentence[]) => Sentence;
-
-export type DerivationArgument = 
-        { axiom: Index; } 
-    |   { derivedSentence: Index; }
-    ;
-
-
-export interface IProof {
-
-    axioms              : Sentence[] ;
-    productionRules     : ProductionRule[] ;
-    
-    derivations: {
-        derivationArguments : DerivationArgument[] ;
-        productionRule      : Index;
-    }[];
-
-    conclusion: Sentence;
-}
-
-
-const _last = (sentences: Sentence[]): Sentence => 
-    sentences[sentences.length - 1];
-
-
-const _verifyDerivation = (
-    proof: IProof, 
-    derivationIndex: number, 
-    previousDerivations: Sentence[]
-    ): Sentence => {
-
-    const derivation = proof.derivations[derivationIndex];
-
-    const productionRule = proof.productionRules[
-        derivation.productionRule];
-
-    const ruleArguments: Sentence[] = derivation.derivationArguments.map(
-        (i: DerivationArgument): Sentence => {
-            if('axiom' in i) return proof.axioms[i.axiom];
-            return previousDerivations[i.derivedSentence];
+    derivation.derivationArguments.map(
+        ( arg: DerivationArgument ): Sentence => {
+            if( 'axiom' in arg ) return axioms[ arg.axiom ] ;
+            return previousDerivationConclusions[ arg.derivedSentence ] ;
         }
     ); 
 
-    return productionRule(...ruleArguments); 
+/******************************************************************************/
+const _verifyDerivation = (
+    proof               : IProof, 
+    derivationIndex     : Index, 
+    previousDerivations : Sentences
+    ): Sentence => {
+
+    const derivation = proof.derivations[ derivationIndex ] ;
+    const productionRule = proof.productionRules[ derivation.productionRule ] ;
+    const ruleArguments = _derivationArguments(
+        derivation,
+        proof.axioms,
+        previousDerivations
+    ) ;
+    return productionRule( ...ruleArguments ) ; 
 }; 
 
+/******************************************************************************/
 export const verifyProof = (proof: IProof): boolean => {
-    const derivedSentences: Sentence[] = []; 
-    for (let i = 0; i < proof.derivations.length; i++) {
-        derivedSentences.push(_verifyDerivation(proof, i, derivedSentences));
-    }
-    return _last(derivedSentences) === proof.conclusion; 
-}
+
+    const derivedSentences: Sentences = [] ; 
+    let derivationIndex = 0 ; 
+
+    while ( derivationIndex < proof.derivations.length ) {
+        const derivedSentence = _verifyDerivation( proof, derivationIndex, derivedSentences ) ; 
+        derivedSentences.push( derivedSentence ) ;  
+        derivationIndex += 1 ; 
+    } 
+
+    return lastSentence( derivedSentences ) === proof.conclusion ; 
+
+}; 
