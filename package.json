@@ -2,6 +2,7 @@
     "name": "neuron-fac",
     "version": "0.0.0",
     "private": true,
+    "type": "module",
     "scripts": {
         "lint": "eslint --ignore-path .eslintignore --ext .js,.ts .",
         "build": "npx tsc",
