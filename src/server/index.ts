@@ -3,7 +3,6 @@ import express, { Express } from "express";
 import dotenv from "dotenv";
 import { newIndexRouter } from "../../routes/index";
 import { NeuronFacApp } from "./types";
-import { rateLimit } from "express-rate-limit";
 
 
 dotenv.config();
@@ -13,11 +12,6 @@ const rootDirPath = path.join(__dirname, "../../../");
 console.log(rootDirPath);
 
 
-const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // limit each IP to 100 requests per windowMs
-})
-expressApp.use(limiter);
 expressApp.use(express.json());
 expressApp.use(express.urlencoded({ extended: true }));
 
