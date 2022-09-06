@@ -8,3 +8,8 @@ Neuron-fac is made up of 3 components:
 
 3. A set of quality assurance technics and outputs that proves and demonstrates that code produced by (2) is sound, meets its requirements and 
   3a. 
+
+
+To run the server: 
+- npm run build
+- npm run server
