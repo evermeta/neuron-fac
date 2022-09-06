@@ -1,17 +1,28 @@
+/*******************************************************************************
+
+*******************************************************************************/
 import fs from "fs";
 import express from "express";
-import { NeuronFacApp } from "../src/server";
+import { NeuronFacApp, PageHandler } from "../src/server/types";
 
-export type pageHandler = {
-    expressRouter: express.Router;
-};
+/******************************************************************************/
 
-export const newIndexRouter = (app: NeuronFacApp): pageHandler => {
-    const expressRouter = express.Router();
-    expressRouter.get("/", function (req, res) {
-        const listOfFiles = fs.readdirSync(app.path);
-        res.render("index", { title: listOfFiles });
+export const newIndexRouter = (
+    route = "", 
+    app: NeuronFacApp): PageHandler => {
+
+    const expressRouter = express.Router( );
+    const viewPath = route === "" ? "index" : route ;
+    const httpRootPath = `/${route}` ;
+
+    expressRouter.get(httpRootPath, (req, res) => {
+
+        const listOfFiles = fs.readdirSync( app.path ) ; 
+        res.render(viewPath, { title: listOfFiles }) ;
+
     });
+
+    app.expressApp.use(expressRouter);
 
     return {
         expressRouter,

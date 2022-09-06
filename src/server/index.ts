@@ -2,24 +2,8 @@ import path from "path";
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import { newIndexRouter } from "../../routes/index";
-/*import createError from 'http-errors'; 
-import cookieParser from 'cookie-parser'; 
+import { NeuronFacApp } from "./types";
 
-/*var logger = require("morgan");
-
-/*
-
-// view engine setup
-
-app.use(logger("dev"));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());*/
-
-export interface NeuronFacApp {
-    expressApp: express.Express;
-    path: string;
-}
 
 dotenv.config();
 const port = process.env.PORT;
@@ -37,11 +21,7 @@ const neuronFacApp: NeuronFacApp = {
     path: rootDirPath,
 }; // end neuronFacApp
 
-const indexHandler = newIndexRouter(neuronFacApp);
-expressApp.use(indexHandler.expressRouter);
-expressApp.get("/blood", (req: Request, res: Response) => {
-    res.send("Express peScript Server");
-});
+["", "gp"].map(route => newIndexRouter(route, neuronFacApp));
 
 expressApp.listen(port, () => {
     console.log(`⚡️[server]: Server is running at https://localhost:${port}`);
