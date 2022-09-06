@@ -2,19 +2,7 @@ import path from "path";
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import { newIndexRouter } from "../../routes/index";
-/*import createError from 'http-errors'; 
-import cookieParser from 'cookie-parser'; 
 
-/*var logger = require("morgan");
-
-/*
-
-// view engine setup
-
-app.use(logger("dev"));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());*/
 
 export interface NeuronFacApp {
     expressApp: express.Express;
