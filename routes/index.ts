@@ -4,6 +4,7 @@
 import fs from "fs";
 import express, {Request, Response} from "express";
 import { NeuronFacApp, PageHandler } from "../src/server/types";
+import rateLimit from "express-rate-limit";
 
 /******************************************************************************/
 

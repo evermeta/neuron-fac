@@ -4,11 +4,11 @@
     "private": true,
     "scripts": {
         "lint": "eslint --ignore-path .eslintignore --ext .js,.ts .",
-        "build": "npx tsc",
+        "build": "tsc --build",
         "server": "node dist/src/server/index.js",
         "server-dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/src/server/index.js views/**/*.hbs \"",
         "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
-        "test": "nyc mocha -r ts-node/register tests/src/**/*.ts",
+        "test": "tsc --build && nyc mocha dist/tests/src/gp/**/*.js dist/tests/src/utils/math/**/*.js dist/tests/src/utils/**/*.js dist/tests/src/**/*.js",
         "interactive": "ts-node tests/interactive/index.ts"
     },
     "dependencies": {

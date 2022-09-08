@@ -25,6 +25,7 @@ export class ProgramPopulation extends PopulationPrototype {
         selectionFunction: SelectionFunction,
         replacementFunction: ReplacementFunction
     ) {
+        super(); 
         const genePool = new GenePool([]);
         super(/*genePool, species*/);
         this.evaluationFunction = evaluationFunction;
