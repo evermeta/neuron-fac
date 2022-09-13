@@ -8,17 +8,30 @@ describe("The Matrix class", () => {
 
     it("Can be constructed through an array of arrays", () => {
         const m1 = new Matrix({
-            values: [[1,2,3],[4,5,6],[7,8,9]]
+            values: [
+                [1,2,3],
+                [4,5,6],
+                [7,8,9]]
         });
 
         expect(trace(m1)).to.equal(15);
-        const mT = transpose(m1)
-        expect(mT).to.deep.equal(
-            new Matrix({
-                values: [[1,4,7],[2,5,8],[3,6,9]]
-            }));
+        const mT = transpose(m1); 
+        expect(mT.values).to.deep.equal(
+                [   [1,4,7],
+                    [2,5,8],
+                    [3,6,9]]);
+            
         expect(trace(mT)).to.equal(15);
     }); 
+    
+    it("Throws an exception when constructed with an invalid array of arrays", () => {
+        expect(() => new Matrix({
+            values: [
+                [1,2,3],
+                [4,5,6],
+                [7,8]]
+        })).to.throw("Invalid matrix dimensions");
+    });
 
     it("Can be constructed through a number of rows and columns", () => {
         const m2 = new Matrix({
@@ -48,6 +61,58 @@ describe("The minor method of the Matrix class", () => {
 });
 /******************************************************************************/
 
+describe("The properties object of the Matrix class", () => {
+    it("Has an indicator for whether the matrix is symmetric", () => {
+        const m1 = new Matrix({
+            values: [
+                [1,2,3],
+                [2,5,6],
+                [3,6,9]
+            ]});
+        expect(m1.properties.isSymmetric).to.be.true;
+        expect(m1.properties.isSquare).to.be.true;
+    });
+
+    it("Has an indicator for whether the matrix is symmetric", () => {
+        const m1 = new Matrix({
+            values: [
+                [1,2],
+                [2,5],
+                [3,6]
+            ]});
+        expect(m1.properties.isSymmetric).to.be.false;
+        expect(m1.properties.isSquare).to.be.false;
+    });
+
+});
+
+describe("The determinant method of the Matrix class", () => {
+    it("Returns the determinant of a 2x2 matrix", () => {
+        const m1 = new Matrix({
+            values: [
+                [1,2],
+                [3,4]
+            ]});
+        expect(m1.determinant()).to.equal(-2);
+    });
+    it("Returns the determinant of a 3x3 matrix", () => {
+        const m1 = new Matrix({
+            values: [
+                [1,2,3],
+                [4,5,6],
+                [7,8,9]
+            ]});
+        const minor00 = m1.minor(0,0);
+        expect(minor00).to.equal(45 - 48);
+        const minor01 = m1.minor(0,1);
+        expect(minor01).to.equal(36 - 42) ;
+
+        expect(m1.determinant()).to.equal(0);
+        expect(transpose(m1).determinant()).to.equal(0);
+    });
+});
+/******************************************************************************/
+
 describe("The matrix product function", () => {
 
     it("Calculates the value of the product of two matrices", () => {
@@ -55,9 +120,9 @@ describe("The matrix product function", () => {
             new Matrix({ values: [[1,2,3],[4,5,6],[7,8,9]] }),
             new Matrix({ values: [[1,2,3],[4,5,6],[7,8,9]] })); 
 
-        expect(matrix).to.deep.equal(
-            new Matrix({ values: [[30,36,42],[66,81,96],[102,126,150]] }));
-        });
+        expect(matrix.values).to.deep.equal(
+            [[30,36,42],[66,81,96],[102,126,150]]
+        )});
 });
 
 describe("The minor matrix function", () => {

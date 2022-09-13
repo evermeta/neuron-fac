@@ -1,4 +1,5 @@
 /******************************************************************************/
+import { matrixProperties, MatrixProperties } from "./matrix-properties";
 import { MatrixType, Vector } from "./types";
 /******************************************************************************/
 
@@ -18,9 +19,12 @@ export const minorMatrix = (
 }
 
 export class Matrix implements MatrixType {
+
     public numberOfColumns  = 0;
     public numberOfRows     = 0;
     public values: number[][] = [];
+    public readonly properties: MatrixProperties 
+
 
     constructor(
         options: {
@@ -32,23 +36,29 @@ export class Matrix implements MatrixType {
         if(options.values){
             this.numberOfRows = options.values.length;
             this.numberOfColumns = options.values[0].length;
+            if(options.values.some(row => row.length !== this.numberOfColumns)){
+                throw new Error("Invalid matrix dimensions");
+            }
             this.values = options.values;
+            this.properties = matrixProperties(this);
             return; 
         }
         if(options.rows && options.columns){
             this.numberOfRows = options.rows;
             this.numberOfColumns = options.columns;
             this.values = Array.from({length: options.rows}, () => Array(options.columns).fill(0));
+            const square = options.rows === options.columns;
+            this.properties = ({
+                isSquare: square, 
+                isSymmetric: square 
+            });
             return;
         } 
         throw new Error("Invalid options");
     }
+    
 
-    rowToVector(row: number): Vector<number>{
-        return {
-            values: this.values[row]
-        };
-    }
+  
 
     determinant(): number{
         
@@ -81,5 +91,20 @@ export class Matrix implements MatrixType {
         return {
             values: this.values.map(row => row[column])
         };
-    }   
+    } 
+
+    rowToVector(row: number): Vector<number>{
+        return {
+            values: this.values[row]
+        };
+    }
+
+    equals(matrix: Matrix): boolean{
+        if(this.numberOfRows !== matrix.numberOfRows || this.numberOfColumns !== matrix.numberOfColumns){
+            return false;
+        }
+        return this.values.every((row, i) => row.every((value, j) => value === matrix.values[i][j]));
+    }
+
+
 }
