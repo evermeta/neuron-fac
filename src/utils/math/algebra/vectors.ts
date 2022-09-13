@@ -1,6 +1,9 @@
+/*****************************************************************************/
 import { Vector } from "./types";
+/*****************************************************************************/
 
-const thresholdEqual = 0.0000000000000001;
+const thresholdEqual = 0.0000001; 
+const equalZero = (a: number) => Math.abs(a) < thresholdEqual;
 
 export const norm = (a: Vector<number>): number => {
     const values = a.values as number[];
@@ -16,17 +19,17 @@ export const dotProduct = (a: Vector<number>, b: Vector<number>): number =>{
     return valuesA.reduce((acc, x, i) => acc + x * valuesB[i], 0);
 }; 
 
-export const areOrthogonalVectors = (vectors: Vector<number>[]): boolean => {
+export const orthogonalVectors = (vectors: Vector<number>[]): boolean => {
     const standardDimension = vectors[0].values.length;
     if(vectors.some(v => v.values.length !== standardDimension)){
         throw new Error("Vectors must have the same length");
     }
     for(let i = 0; i < vectors.length; i++){
         for(let j = i + 1; j < vectors.length; j++){
-            if(dotProduct(vectors[i], vectors[j]) > thresholdEqual){
+            if(equalZero(dotProduct(vectors[i], vectors[j])) === false){
                 return false;
             }
         }
     }
     return true;
-}
+}; 

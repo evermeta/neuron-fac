@@ -1,10 +1,25 @@
-import { MatrixType } from "./types";
+/******************************************************************************/
+import { MatrixType, Vector } from "./types";
 /******************************************************************************/
 
+export const matrixErrors = {
+    incompatibleDimensions : new Error("Matrices must have the same number of rows and columns"),
+    nonSquareMatrix        : new Error("Matrix must be square"),
+};
+
+export const minorMatrix = (
+    values: number[][], 
+    row: number, 
+    column: number): number[][]=> {
+
+    return values
+        .filter((_,i) => i !== row)
+        .map((row) => row.filter((_, j) => j !== column));
+}
 
 export class Matrix implements MatrixType {
-    public numberOfColumns = 0;
-    public numberOfRows =0;
+    public numberOfColumns  = 0;
+    public numberOfRows     = 0;
     public values: number[][] = [];
 
     constructor(
@@ -26,28 +41,45 @@ export class Matrix implements MatrixType {
             this.values = Array.from({length: options.rows}, () => Array(options.columns).fill(0));
             return;
         } 
-
+        throw new Error("Invalid options");
     }
-}
 
-export const trace = (matrix: Matrix): number => {
-    if(matrix.numberOfRows !== matrix.numberOfColumns){
-        throw new Error("Matrix must be square");
+    rowToVector(row: number): Vector<number>{
+        return {
+            values: this.values[row]
+        };
     }
-    return matrix.values.reduce((acc, val, i) => acc + val[i], 0);
-} ;
 
+    determinant(): number{
+        
+        const _determinant = (): number => { 
+            let determinant = 0;
+            for(let i = 0; i < this.numberOfColumns; i++){
+                determinant += this.values[0][i] * this.cofactor(0, i);
+            }
+            return determinant;
+        }; 
 
-export const transpose = (matrix: Matrix): Matrix => {
-    const newMatrix = new Matrix({
-        rows: matrix.numberOfColumns,
-        columns: matrix.numberOfRows
-    });
-    for(let i = 0; i < matrix.numberOfRows; i++){
-        for(let j = 0; j < matrix.numberOfColumns; j++){
-            newMatrix.values[j][i] = matrix.values[i][j];
+        if(this.numberOfRows !== this.numberOfColumns){
+            throw matrixErrors.nonSquareMatrix; 
         }
+        return this.numberOfRows === 1 
+            ? this.values[0][0]
+            : _determinant();
     }
-    return newMatrix;
-}
 
+    cofactor(row: number, column: number): number{
+        return Math.pow(-1, row + column) * this.minor(row, column);
+    }
+
+    minor(row: number, column: number): number{
+        return (new Matrix({ values: minorMatrix(this.values, row, column) }))
+            .determinant();
+    }
+
+    columnToVector(column: number): Vector<number>{
+        return {
+            values: this.values.map(row => row[column])
+        };
+    }   
+}
