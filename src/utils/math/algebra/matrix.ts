@@ -7,6 +7,7 @@ export const matrixErrors = {
     incompatibleDimensions : new Error("Matrices must have the same number of rows and columns"),
     nonSquareMatrix        : new Error("Matrix must be square"),
 };
+/******************************************************************************/
 
 export const minorMatrix = (
     values: number[][], 
@@ -17,13 +18,15 @@ export const minorMatrix = (
         .filter((_,i) => i !== row)
         .map((row) => row.filter((_, j) => j !== column));
 }
+/******************************************************************************/
 
 export class Matrix implements MatrixType {
 
-    public numberOfColumns  = 0;
-    public numberOfRows     = 0;
-    public values: number[][] = [];
+    public numberOfColumns      = 0;
+    public numberOfRows         = 0;
+    public values: number[][]   = [];
     public readonly properties: MatrixProperties 
+
 
 
     constructor(
@@ -41,24 +44,28 @@ export class Matrix implements MatrixType {
             }
             this.values = options.values;
             this.properties = matrixProperties(this);
+            Object.freeze(this.values);
             return; 
         }
         if(options.rows && options.columns){
-            this.numberOfRows = options.rows;
-            this.numberOfColumns = options.columns;
-            this.values = Array.from({length: options.rows}, () => Array(options.columns).fill(0));
-            const square = options.rows === options.columns;
+            this.numberOfRows     = options.rows;
+            this.numberOfColumns  = options.columns;
+            /******************************************************************/
+            this.values = Array.from(
+                {length: options.rows}, () => Array(options.columns).fill(0)
+            );
+            /******************************************************************/
+            const square          = options.rows === options.columns;
+
             this.properties = ({
                 isSquare: square, 
                 isSymmetric: square 
             });
+            Object.freeze(this.values);
             return;
         } 
         throw new Error("Invalid options");
     }
-    
-
-  
 
     determinant(): number{
         

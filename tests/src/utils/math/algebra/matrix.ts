@@ -95,7 +95,7 @@ describe("The determinant method of the Matrix class", () => {
             ]});
         expect(m1.determinant()).to.equal(-2);
     });
-    it("Returns the determinant of a 3x3 matrix", () => {
+    it("Returns the determinant of a 3x3 matrix, example 1", () => {
         const m1 = new Matrix({
             values: [
                 [1,2,3],
@@ -109,6 +109,26 @@ describe("The determinant method of the Matrix class", () => {
 
         expect(m1.determinant()).to.equal(0);
         expect(transpose(m1).determinant()).to.equal(0);
+    });
+
+    it("Returns the determinant of a 3x3 matrix, example 2", () => {
+        const m1 = new Matrix({
+            values: [
+                [1, 4,  2],
+                [2, 1, -3],
+                [3, 5, -1]
+            ]});
+        expect(m1.determinant()).to.equal(0);
+    });
+
+    it("Returns the determinant of a 3x3 matrix, example 3", () => {
+        const m1 = new Matrix({
+            values: [
+                [2,  1,  4],
+                [2, -1,  2],
+                [0,  1, -2]
+            ]});
+        expect(m1.determinant()).to.equal(12);
     });
 });
 /******************************************************************************/
