@@ -17,9 +17,14 @@ export const readCSVFromFile = (filePath: string): Promise<Matrix> => {
     });
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    return p.then((_) => new Matrix({values: strData
+    return p.then((_) => {
+        return new Matrix({values: strData
         .split(/[\t\r]*\n[\r\t]*/)
         .map((line: string) => 
             line.split(/[\t\r]*,[\r\t]*/)
-                .map(x=>+x))}));
-};
+                .map(x=>+x))
+        });
+    })
+} 
+
+

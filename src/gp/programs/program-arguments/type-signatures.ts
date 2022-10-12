@@ -1,4 +1,17 @@
+export const arrowDelimiter = '=>';
 export type TypeSignature = string;
+
+export const getArguments = (typeSignature: TypeSignature) => {
+    const args = typeSignature
+        .split(arrowDelimiter)
+        .map(args => args.trim()) ;
+    const returnValue = args.pop(); 
+    return {
+        programArgument: args, 
+        returnValue
+    };
+}
+
 /*const context = (function () {
     let names, generateIndex;
     names = new Map();
