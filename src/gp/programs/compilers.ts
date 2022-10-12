@@ -11,14 +11,21 @@ import { Program, ProgramReturnType } from "./program-class";
 export type ExecProcess = (input: ProgramInputType) => ProgramReturnType;
 export type Compiler = (p: Program) => ExecProcess;
 
+
+const _jsFunctionArgumentNames = (programArguments: ProgramArguments) => {
+    const argumentNames = Object.keys(programArguments).join('_');
+    return `_${argumentNames}`;
+};
+
 //processes one liner js code, for example: 'b*3' or 'b.toString().length * c'
 export const oneLinerCodePreprocessor: PreProcessor = (
     inputs: ProgramArguments, 
     unprocessedCode: string
     ): string => {
-
+    
+    const functionArgumentName = _jsFunctionArgumentNames(inputs); 
     const compilerHeaderCode = Object.keys(inputs)
-        .map((inputName) => `const ${inputName}=a[${inputs[inputName].index}];`)
+        .map((inputName) => `const ${inputName}=${functionArgumentName}[${inputs[inputName].index}];`)
         .join("\n");
 
     return [
@@ -27,15 +34,20 @@ export const oneLinerCodePreprocessor: PreProcessor = (
     ].join("\n");
 };
 
-export const jsCompiler: Compiler = (p: Program) => {
+
+
+export const jsCompiler: Compiler = (p: Program): ExecProcess => {
 
     const supportedLanguages = ["jsOneLiner"];
 
     if (supportedLanguages.includes(p.language) === false) {
         throw `Unsupported language ${p.language}`;
     }
+
+    const functionArgumentName = _jsFunctionArgumentNames(p.inputs); 
+
     const executable = new Function(
-        "a", 
+        functionArgumentName, 
         oneLinerCodePreprocessor(
             p.inputs, 
             p.code.unprocessedCode
