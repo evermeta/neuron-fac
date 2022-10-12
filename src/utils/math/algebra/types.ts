@@ -1,7 +1,15 @@
+/******************************************************************************/
+export interface Polynomial<T> {
+    coefficients: T[];
+    degree: number;
+}
+
+/******************************************************************************/
 export interface MatrixType {
     numberOfRows: number;
     numberOfColumns: number;
 }
+/******************************************************************************/
 
 export interface AlgebraicGroup<T> {
     operation: (a: T, b: T) => T;
