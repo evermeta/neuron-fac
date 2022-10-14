@@ -1,8 +1,8 @@
 import { TypeSignature } from "./program-arguments/type-signatures";
 import { ObjectWithUUID } from "../../utils/uuid";
-import { ExecProcess } from "./compilers";
 import { ProgramArguments } from "./program-arguments/types";
 import { getSignature } from "./program-arguments/get-signature";
+import { ExecProcess } from "./compilers/preprocessor-types";
 /*****************************************************************************
  * A program's genotype is the set of genes that it carries,
  * and the blueprint by which they are combined (its species).
@@ -67,9 +67,17 @@ export class TypedObject extends ObjectWithUUID {
     }
 
     toString(){
-        return `//Type Signature: ${this.typeSignature}`;
+        return [`//Type Signature: ${this.typeSignature}`]
     }
 } 
+
+const _asString = (typeSignature: string[], args: ProgramArguments, rawCode: string): string[] => {
+    return [
+    ...typeSignature,
+    `${Object.keys(args).map(k=>k + ":" + args[k].type).join(",")}`,
+    rawCode,
+    ]
+}
 
 export class Program extends TypedObject implements ProgramType {
 
@@ -99,23 +107,11 @@ export class Program extends TypedObject implements ProgramType {
             : code;
     }
 
-    toString() {
-       
-        const format = (code: string) => {
-            return [
-                `const ${this.ID} = (a) => {`,
-                ...code.split("\n"), 
-            ].join('\n\t') + '\n}';
-        }; 
-
-        const code = this.code.preProcessor
-            ? format(this.code.preProcessor(this.inputs, this.code.unprocessedCode))
-            : `//UnprocessedCode: ${this.code.unprocessedCode}`; 
-
-        return [
+    toString(): string[] {
+        return _asString(
             super.toString(),
-            `//Program Language: ${this.language}`,
-            `${code}`,
-        ].join("\n");
+            this.inputs,
+            this.code.unprocessedCode
+        );
     }
 }

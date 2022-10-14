@@ -46,8 +46,8 @@ infinite loops, syntax errors, runtime errors, type errors, etc.
 ***************************************************************/
 import { expect } from "chai";
 import { Program } from "../../../../../src/gp/programs/program-class";
-import { jsCompiler } from "../../../../../src/gp/programs/compilers";
 import { ProgramArguments } from "../../../../../src/gp/programs/program-arguments/types";
+import { jsCompiler } from "../../../../../src/gp/programs/compilers/jsCompiler";
 
 const newJSOneLinerProgram = (programArguments: ProgramArguments, code: string) => new Program(
         "jsOneLiner",
@@ -156,5 +156,4 @@ describe("Program typeSignature property", () => {
         );
     });
 });
-
 
