@@ -1,3 +1,16 @@
+/******************************************************************************/
+export interface Polynomial<T> {
+    coefficients: T[];
+    degree: number;
+}
+
+/******************************************************************************/
+export interface MatrixType {
+    numberOfRows: number;
+    numberOfColumns: number;
+}
+/******************************************************************************/
+
 export interface AlgebraicGroup<T> {
     operation: (a: T, b: T) => T;
     inverse: (a: T) => T;
@@ -19,11 +32,12 @@ export interface AlgebraicField<T> extends AdditiveGroup<T>, MultiplicativeGroup
     negate: (a: T) => T;
 }
 
-export interface Vector {
-    coordinates: Record<string, unknown>;
-}
+
+export type Vector<T>  = {
+    values: T[] | Record<string, T>; 
+} 
 
 export interface VectorSpace<T> {
     field: AlgebraicField<T>;
-    scale: (a: T, b: Vector) => Vector;
+    scale: (a: T, b: Vector<T>) => Vector<T>;
 }

@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { EvaluationFunction, PopulationPrototype } from "../../../../src/gp/population";
-import { ProgramArguments } from "../../../../src/gp/programs/program-arguments/types";
+import { ProgramArguments } from "../../../../src/gp/programs/program-arguments/program-arguments";
 import { Program } from "../../../../src/gp/programs/program-class";
 
 const progInputs: ProgramArguments = {b: {index: 0, type: "number"}, c: {index: 1, type: "number"}};
@@ -40,12 +40,14 @@ describe("The population class stores program", () => {
         const evaluationFunction: EvaluationFunction = async (programs: Program[]) => {
             const testValues = [[3,3],[1, 2]];
             return evaluationFunction(programs);
-        }
-        /*
+        };
+
         const programOne = testProgram("b*3");
         const programTwo = testProgram("b*c");
-        population.addProgram(programOne, programTwo);
-        const scores = await population.evaluateAll(evaluationFunction);
+        
+        
+        /*
+        const programOne = testProgram("b*3");
         expect(scores[0].fitness).to.be.deep.eq(1);
         expect(scores[1].fitness).to.be.deep.eq(0);*/
         expect(1).to.be.eq(1);
