@@ -13,7 +13,7 @@
                 "--require", "ts-node/register",
                 "--timeout", "999999",
                 "--colors", "--recursive",
-                "${workspaceFolder}/tests/src/gp/**/*.ts"
+                "${workspaceFolder}/tests/src/**/*.ts"
             ],
             "internalConsoleOptions": "openOnSessionStart"
         },

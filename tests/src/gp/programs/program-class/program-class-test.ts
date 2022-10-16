@@ -46,8 +46,8 @@ infinite loops, syntax errors, runtime errors, type errors, etc.
 ***************************************************************/
 import { expect } from "chai";
 import { Program } from "../../../../../src/gp/programs/program-class";
-import { jsCompiler } from "../../../../../src/gp/programs/compilers";
-import { ProgramArguments } from "../../../../../src/gp/programs/program-arguments/types";
+import { ProgramArguments } from "../../../../../src/gp/programs/program-arguments/program-arguments";
+import { jsCompiler } from "../../../../../src/gp/programs/compilers/jsCompiler";
 
 const newJSOneLinerProgram = (programArguments: ProgramArguments, code: string) => new Program(
         "jsOneLiner",
@@ -137,7 +137,8 @@ describe("Program typeSignature property", () => {
             "number",
             "b*3"
         );
-        expect(program.typeSignature).to.deep.equal("number => number");
+        expect(program.typeSignature.expression)
+            .to.deep.equal("(number) => number");
     });
 
     it("It returns the type signature of the program", () => {
@@ -151,10 +152,9 @@ describe("Program typeSignature property", () => {
             "number",
             "b*3"
         );
-        expect(program.typeSignature).to.deep.equal(
-            "number => string => number"
+        expect(program.typeSignature.expression).to.deep.equal(
+            "(number) => (string) => number"
         );
     });
 });
-
 
