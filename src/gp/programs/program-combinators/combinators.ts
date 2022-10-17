@@ -1,36 +1,86 @@
+import { stringify } from "querystring";
 import { ExecProcess } from "../compilers/preprocessor-types";
-import { renumberArgs } from "../program-arguments/program-arguments";
+import { typeSignatureIsTypeAbstraction } from "../program-arguments/get-signature";
+import { ProgramArgument, ProgramArguments, renumberArgs } from "../program-arguments/program-arguments";
 import { Program } from "../program-class";
+/*****************************************************************************/
+
+type typeVariableInfo = {
+    typeVariableName: string;
+    type: string;
+};
+const _strReplaceIn = (
+    replacementString: string,
+    stringToReplace: string,  
+    containerString: string
+    ): string => {
+
+    if(stringToReplace === containerString) {
+        return replacementString;
+    }
+    return containerString; 
+}
+
+export const functionAsString = (arg:string, code:string) => 
+    `(${arg} => ${code})`;
+
+const _replaceIn = (
+    varName: string,
+    varValue: unknown,  
+    programInputs: ProgramArguments
+    ): void => {
+        Object.keys(programInputs).forEach(
+            inputArgument => {
+                const argSpec = programInputs[inputArgument];
+                if(typeof(argSpec) === 'string'){
+                    return; 
+                }
+                if('type' in argSpec) {
+                    argSpec.type = _strReplaceIn(
+                        varValue as string, 
+                        varName, 
+                        argSpec.type)
+                }
+            }); 
+        };
 
 
+const _programPartialApplication = (
+    p: Program, 
+    argValues: Record<string, unknown>
+    ): Program => {
 
-export const functionAsString = (arg:string, code:string) => `(${arg} => ${code})`;
+        const variableNames = Object.keys(argValues); 
+        const newProgInputs = {...p.inputs};
+        let newCode =  p.code.unprocessedCode;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        variableNames.forEach( varName => {
+            delete(newProgInputs.TypeVariable);
+            if(typeof(newProgInputs[varName]) === "object"){
+                newCode = `${functionAsString(varName, newCode)}(${argValues[varName]})`;
+            } else {
+                _replaceIn(varName, argValues[varName], newProgInputs);
+            }
+        });
 
-const _programPartialApplication = (p: Program, args: any) => {
-    const progArgNames = Object.keys(args); 
-    const newProgArgs = {...p.inputs};
-    let newCode =  p.code.unprocessedCode;
+        variableNames.forEach((argName) => {
+            if(typeof(newProgInputs[argName]) === "object"){
+                delete(newProgInputs[argName]);
+            }
+        });
 
-    progArgNames.forEach((argName) => {
-        delete(newProgArgs[argName]);
-        newCode = `${functionAsString(argName, newCode)}(${args[argName]})`;
-        
-        //`(${argName} => ${newCode})(${args[argName]})`;
-    });
-
-    return new Program(
-        p.language, 
-        renumberArgs(newProgArgs), 
-        'number',
-        newCode,
+        return new Program(
+            p.language, renumberArgs(newProgInputs), 
+            'number', newCode,
         );
     }; 
 
 export const partialApplication = (
-    p: Program | ExecProcess, args: Record<string, unknown>
+    p: Program | ExecProcess, 
+    argValues: Record<string, unknown> 
     ): Program | ExecProcess => {
-        
-        if(p instanceof Program) return _programPartialApplication(p, args);
+    /**************************************************************************/    
+        if(p instanceof Program) return _programPartialApplication(p, argValues);
         throw new Error("Not implemented yet");
     }; 
      

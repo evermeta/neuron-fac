@@ -1,8 +1,8 @@
 import { expect } from "chai";
-import { jsCompiler, oneLinerCodePreprocessor } from "../../../../src/gp/programs/compilers/jsCompiler";
-import { ProgramArguments } from "../../../../src/gp/programs/program-arguments/program-arguments";
-import { Program } from "../../../../src/gp/programs/program-class";
-import { partialApplication } from "../../../../src/gp/programs/program-combinators/combinators";
+import { jsCompiler } from "../../../../../src/gp/programs/compilers/jsCompiler";
+import { ProgramArguments } from "../../../../../src/gp/programs/program-arguments/program-arguments";
+import { Program } from "../../../../../src/gp/programs/program-class";
+import { partialApplication } from "../../../../../src/gp/programs/program-combinators/combinators";
 
 const newJSOneLinerProgram = (programArguments: ProgramArguments, code: string) => new Program(
     "jsOneLiner",
@@ -45,6 +45,16 @@ describe("Program combinators - partialApplication combinator", () => {
         expect(jsCompiler(partial)([5])).to.deep.equal(14);
     });
 
+    it("It can super-curry multiple variables in any order", async () => {
+        const programArguments = {
+            TypeVariable: 'T', 
+            c: { type: "T", index: 1 },
+            b: { type: "T", index: 0 },
+        };
 
+        const program = new Program("jsOneLiner", programArguments, "T", "b"); 
+        const partial = partialApplication(program, {T: 'number'}) as Program;
+        expect(jsCompiler(partial)([5,4])).to.deep.equal(5);
+    });
 
 });

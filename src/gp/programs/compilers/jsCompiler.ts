@@ -10,7 +10,7 @@
 * can be executed by any javascript engine. 
 * *****************************************************************************/
 
-import { Compiler, ExecProcess, PreProcessor } from "./preprocessor-types";
+import { ExecProcess, PreProcessor } from "./preprocessor-types";
 import { ProgramArgument, ProgramArguments } from "../program-arguments/program-arguments";
 import { Program } from "../program-class";
 /******************************************************************************/
@@ -22,9 +22,12 @@ export const oneLinerCodePreprocessor: PreProcessor = (
 ): string => {
      
     const compilerHeaderCode = Object.keys(inputs)
-        .map((inputName) => {
-                const input = inputs[inputName] as ProgramArgument;
-                return `const ${inputName}=${argArrayName}[${input.index}];`;
+    .filter((argName) => argName !== 'TypeVariable')
+    .sort((a, b) => (inputs[a] as ProgramArgument).index 
+            - (inputs[b] as ProgramArgument).index)
+    .map((inputName) => {
+            const input = inputs[inputName] as ProgramArgument;
+            return `const ${inputName}=${argArrayName}[${input.index}];`;
         }).join("\n");
     /**************************************************************************/ 
 

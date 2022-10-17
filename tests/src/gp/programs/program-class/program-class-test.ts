@@ -49,12 +49,17 @@ import { Program } from "../../../../../src/gp/programs/program-class";
 import { ProgramArguments } from "../../../../../src/gp/programs/program-arguments/program-arguments";
 import { jsCompiler } from "../../../../../src/gp/programs/compilers/jsCompiler";
 
-const newJSOneLinerProgram = (programArguments: ProgramArguments, code: string) => new Program(
+const newJSOneLinerProgram = (
+    programArguments: ProgramArguments, 
+    code: string
+    ) => new Program(
         "jsOneLiner",
         programArguments, 
         "number",
         code,
     );
+/******************************************************************************/
+
 describe("The Program class", () => {
 
     it("It has a unique 36 char uuid", () => {
@@ -127,6 +132,8 @@ describe("The Program class", () => {
         
         expect(jsCompiler(program)(["bcba", 3, 3])).to.deep.equal(15);
     });
+
+   
 });
 
 describe("Program typeSignature property", () => {
