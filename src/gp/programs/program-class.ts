@@ -2,6 +2,7 @@ import { ObjectWithUUID } from "../../utils/uuid";
 import { ProgramArgument, ProgramArguments } from "./program-arguments/program-arguments";
 import { ExecProcess } from "./compilers/preprocessor-types";
 import { TypeSignature, typeSignatureFromProgramArguments } from "./program-arguments/type-signature-class";
+import { TypedObject } from "./typed-object";
 /*****************************************************************************
  * A program's genotype is the set of genes that it carries,
  * and the blueprint by which they are combined (its species).
@@ -50,26 +51,7 @@ export interface ProgramType {
     readonly typeSignature: TypeSignature;
     readonly code: Code;
 }
-/******************************************************************************/
 
-export class TypedObject extends ObjectWithUUID {
-
-    readonly typeSignature: TypeSignature;
-    public readonly inputs: ProgramArguments;
-
-    constructor(
-        inputs: ProgramArguments, 
-        outputType: string
-        ){
-        super();
-        this.inputs = inputs;
-        this.typeSignature = new TypeSignature(typeSignatureFromProgramArguments(this.inputs, outputType));
-    }
-
-    toString(){
-        return [`//Type Signature: ${this.typeSignature.expression}`]
-    }
-} 
 /******************************************************************************/
 const _asString = (
     typeSignature: string[], 

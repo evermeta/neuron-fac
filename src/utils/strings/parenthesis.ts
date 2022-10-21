@@ -2,6 +2,12 @@
  * The parenthesis function returns an array of strings, each string is a
  * sub-block of the input string that is enclosed in parenthesis.
  *****************************************************************************/
+export type Separator = string;
+export const SeparatorSplit = (expression: string, separator: Separator): string[] => {
+    const result: string[] = expression.split(separator);
+    return result;
+};
+
 export type BinaryEncloser = {
     open: string;
     close: string;
@@ -41,6 +47,15 @@ export const binaryEncloserSplit = (
             }
         }
         current += char;
-    }
+    } 
+    if (current.trim().length > 0) result.push(current.trim());
     return result;
 }
+
+export type Encloser = Separator | BinaryEncloser; 
+
+export const encloserSplit = (expression: string): string[] => {
+    const result = binaryEncloserSplit(expression);
+    return result;
+}; 
+

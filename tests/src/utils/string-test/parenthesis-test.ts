@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { binaryEncloserSplit } from "../../../../src/utils/strings/parenthesis";
+import { binaryEncloserSplit, encloserSplit } from "../../../../src/utils/strings/parenthesis";
 
 describe("binary encloser split function", () => {
     it("Returns the input string when it doesn't contain parenthesis", () => {
@@ -18,5 +18,15 @@ describe("binary encloser split function", () => {
     it("It ignores trailing spaces in each sub-block", () => {
         const result = binaryEncloserSplit("( this sentence (has)) (two blocks, (each) with (nested) parenthesis)");
         expect(result).to.deep.equal(["this sentence (has)", "two blocks, (each) with (nested) parenthesis"]);
+    });
+
+    it("", () => {
+        const resultOne = encloserSplit(
+            "(A => B)=>(A => X) => X"
+        );
+        expect(resultOne).to.deep.equal(["A => B", "=>", "A => X", "=> X"]);
+
+        const resultTwo = encloserSplit("(A => B)=>((A => X) => X)");
+        expect(resultTwo).to.deep.equal(["A => B", "=>", "(A => X) => X"]);
     });
 });
