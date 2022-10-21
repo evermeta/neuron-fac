@@ -1,6 +1,6 @@
 import { stringify } from "querystring";
 import { ExecProcess } from "../compilers/preprocessor-types";
-import { typeSignatureIsTypeAbstraction } from "../program-arguments/get-signature";
+import { typeSignatureIsTypeAbstraction } from "../program-arguments/utils";
 import { ProgramArgument, ProgramArguments, renumberArgs } from "../program-arguments/program-arguments";
 import { Program } from "../program-class";
 /*****************************************************************************/
