@@ -1,23 +1,40 @@
-import { SYMBOLS } from "../../../utils/strings/tokenizer";
+/******************************************************************************/
+
+import { tokenize } from "../../../utils/strings/tokenizer";
+import * as is from "../../type-signatures/types";
 import { TypeSignature } from "./type-signature-class";
+import { atomicTypes } from "./utils";
+/******************************************************************************/
 
 
-const isArrowType = (typeSignature: string): boolean => {
-    return typeSignature.includes(TypeSignature.defaultArrowDelimiter);
-};
+export const abstractType = (
 
-export const abstractTypeSignature = (typeSignature: TypeSignature, typeToAbstract: TypeSignature): string => {
+    typeSignature: TypeSignature | string, 
+    typeToAbstract: TypeSignature | string
+
+    ): TypeSignature => {
     //constructs an abstract type signature from a type signature and the 
     //type within it to abstract
-
+    const expressionAtomicTypes = atomicTypes(typeSignature);
     //1. come up with a new type variable name
-    const typeSignatureToken  = tokenize(typeSignature.expression);
-    const typeToAbstractToken = tokenize(typeToAbstract.expression);
+    const ts = [
+        "< X > ." , 
+        (typeof typeSignature === "string" 
+        ?  typeSignature
+        :  typeSignature.expression)
+        .replace(/Number/g, "X")
+    ].join(" ");
 
-    return '';
+
+
+    const typeToAbstractionTokens = typeof typeToAbstract === "string"
+        ? tokenize(typeToAbstract)
+        : tokenize(typeToAbstract.expression);
+
+    return new TypeSignature("TODO");
 }
 
-export const arrowTypeSignature = (
+export const arrowType = (
     left: TypeSignature | string,
     right: TypeSignature | string
     ): TypeSignature =>{
@@ -25,7 +42,7 @@ export const arrowTypeSignature = (
             ? left.expression 
             : left; 
 
-        if(isArrowType(leftTypeSignature)){
+        if(is.arrowType(leftTypeSignature)){
             leftTypeSignature = `(${leftTypeSignature})`;
         }
         
@@ -35,8 +52,4 @@ export const arrowTypeSignature = (
 
         return new TypeSignature(`${leftTypeSignature} => ${rightTypeSignature}`)
     }
-
-function tokenize(expression: string) {
-    throw new Error("Function not implemented.");
-}
 

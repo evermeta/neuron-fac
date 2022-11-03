@@ -1,44 +1,43 @@
 /******************************************************************************/
 
+import { Combinator, combinators, TypeSignatureTree, TypeSignatureNode, TypeSignatureLeaf } from "../../types";
 import { TypeSignature } from "./type-signature-class";
 
 /******************************************************************************/
-export const combinators = {
-    arrow: '=>'
-}
-export type Combinator = keyof typeof combinators;
-
 const _combine = (combinator: Combinator, left: string, right: string): TypeSignature => {
     return new TypeSignature(`${left} ${combinators[combinator]} ${right}`);
 }; 
 
-export type TypeSignatureLeaf = TypeSignature | null;
-export interface TypeSignatureNode {
-    combinator: keyof typeof combinators; 
-    typeSignature: TypeSignature;
-    left: TypeSignatureNode | TypeSignatureLeaf; 
-    right: TypeSignatureNode | TypeSignatureLeaf;
-} 
-
-export type TypeSignatureTree = TypeSignatureNode | TypeSignatureLeaf;
-
 const applyTypeSignatureCombinator = (
     combinator: Combinator, 
-    left: TypeSignatureTree, 
-    right: TypeSignatureTree
+    left: TypeSignatureNode | TypeSignatureLeaf, 
+    right: TypeSignatureNode | TypeSignatureLeaf,
     ): TypeSignature => {
     
     if(combinator === 'arrow') {
         return  _combine(combinator, 
             (left && 'typeSignature' in left 
                 ? left.typeSignature.expression
-                :'fdsa'),
+                :'Fdsa'),
             (right && 'typeSignature' in right
                 ? right.typeSignature.expression
-                : 'fdsa'));
+                : 'Fdsa'));
     }
 
     throw new Error(`Unknown combinator: ${combinator}`);
+}
+
+const _makeTypeSignatureNode = (
+        node: TypeSignatureNode | TypeSignatureLeaf
+    ): TypeSignature=> {
+
+    if(node === null) {
+        throw(new Error('Cannot make a type signature node from a null value'));
+    }
+    if('typeSignature' in node) {
+        return new TypeSignature(node.typeSignature.expression);
+    }
+    return node;
 }
 
 export const makeTypeSignatureNode = (options: {
@@ -47,7 +46,11 @@ export const makeTypeSignatureNode = (options: {
     right?: TypeSignatureNode | TypeSignatureLeaf;
 }): TypeSignatureTree => {
 
-    if (!('combinator' in options)) return options.left;
+    if (!('combinator' in options)) return {
+        root: options.left,
+        typeSignature: _makeTypeSignatureNode(options.left)
+    };
+
     const combinator = options.combinator as Combinator; 
     if(!('right' in options)) {
         throw new Error(`Right side of type signature node is missing`);
@@ -58,9 +61,12 @@ export const makeTypeSignatureNode = (options: {
         options.right as TypeSignatureNode | TypeSignatureLeaf);
 
     return {
-        combinator,
         typeSignature,
-        left: options.left,
-        right: options.right as TypeSignatureNode | TypeSignatureLeaf 
+        root: {
+            combinator,
+            typeSignature,
+            left: options.left,
+            right: options.right as TypeSignatureNode | TypeSignatureLeaf 
+        }
     }
 }

@@ -1,15 +1,6 @@
 /******************************************************************************/
-export type ProgramArgument = {
-    type: string;
-    index: number;
-};
 
-export type ProgramArguments = Record<string, string | ProgramArgument>;
-
-export type ProgramInOut = {
-    inputs: ProgramArguments;
-    outputType: string;
-}
+import { ProgramArguments } from "../../types";
 /******************************************************************************/
 
 export const renumberArgs = (args: ProgramArguments): ProgramArguments => {

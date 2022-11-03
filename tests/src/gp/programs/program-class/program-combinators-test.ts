@@ -1,25 +1,19 @@
 import { expect } from "chai";
 import { jsCompiler } from "../../../../../src/gp/programs/compilers/jsCompiler";
-import { ProgramArguments } from "../../../../../src/gp/programs/program-arguments/program-arguments";
 import { Program } from "../../../../../src/gp/programs/program-class";
 import { partialApplication } from "../../../../../src/gp/programs/program-combinators/combinators";
+import { newJSOneLinerProgram } from "../program-arguments/utils";
 
-const newJSOneLinerProgram = (programArguments: ProgramArguments, code: string) => new Program(
-    "jsOneLiner",
-    programArguments, 
-    "number",
-    code,
-);
 
 const programAdd = newJSOneLinerProgram( { 
-    a: { type: "number", index: 0 },
-    b: { type: "number", index: 1 } 
+    a: { type: "Number", index: 0 },
+    b: { type: "Number", index: 1 } 
 }, "a+b");
 
 const programTwo = newJSOneLinerProgram( { 
-    a:      { type: "number", index: 0 },
-    mult:   { type: "number", index: 1 },
-    c:      { type: "number", index: 2 } 
+    a:      { type: "Number", index: 0 },
+    mult:   { type: "Number", index: 1 },
+    c:      { type: "Number", index: 2 } 
 }, "mult*a+c");
 
 
@@ -53,7 +47,7 @@ describe("Program combinators - partialApplication combinator", () => {
         };
 
         const program = new Program("jsOneLiner", programArguments, "T", "b"); 
-        const partial = partialApplication(program, {T: 'number'}) as Program;
+        const partial = partialApplication(program, {T: 'Number'}) as Program;
         expect(jsCompiler(partial)([5,4])).to.deep.equal(5);
     });
 

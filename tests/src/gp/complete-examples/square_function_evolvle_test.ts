@@ -1,20 +1,20 @@
 import { expect } from "chai";
-import { ProgramArguments } from "../../../../src/gp/programs/program-arguments/program-arguments";
 import { Program } from "../../../../src/gp/programs/program-class";
+import { ProgramArguments } from "../../../../src/gp/types";
 import { readCSVFromFile } from "../../../../src/utils/files/csv";
 
 const newJSOneLinerProgram = (programArguments: ProgramArguments, code: string) => new Program(
     "jsOneLiner",
     programArguments, 
-    "number",
+    "Number",
     code,
 );
 
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const programAdd = newJSOneLinerProgram( { 
-    a: { type: "number", index: 0 },
-    b: { type: "number", index: 1 } 
+    a: { type: "Number", index: 0 },
+    b: { type: "Number", index: 1 } 
 }, "a+b");
 
 

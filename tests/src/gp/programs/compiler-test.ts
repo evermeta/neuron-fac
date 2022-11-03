@@ -1,22 +1,17 @@
+/******************************************************************************/
+
 import { expect } from "chai";
 import { jsCompiler } from "../../../../src/gp/programs/compilers/jsCompiler";
-import { ProgramArguments } from "../../../../src/gp/programs/program-arguments/program-arguments";
-import { Program } from "../../../../src/gp/programs/program-class";
+import { newJSOneLinerProgram } from "./program-arguments/utils";
+/******************************************************************************/
 
-
-const newJSOneLinerProgram = (programArguments: ProgramArguments, code: string) => new Program(
-    "jsOneLiner",
-    programArguments, 
-    "number",
-    code,
-);
 describe("Compilers", () => {
 
     it("It has a unique 36 char uuid", () => {
 
         const programTwo = newJSOneLinerProgram( { 
-            a: { type: "number", index: 0 },
-            b: { type: "number", index: 1 } 
+            a: { type: "Number", index: 0 },
+            b: { type: "Number", index: 1 } 
         }, "b*a");
 
         const executableProcessTwo = jsCompiler(programTwo);

@@ -1,8 +1,6 @@
-import { ObjectWithUUID } from "../../utils/uuid";
-import { ProgramArgument, ProgramArguments } from "./program-arguments/program-arguments";
 import { ExecProcess } from "./compilers/preprocessor-types";
-import { TypeSignature, typeSignatureFromProgramArguments } from "./program-arguments/type-signature-class";
 import { TypedObject } from "./typed-object";
+import { ProgramType, Code, ProgramArgument, ProgramArguments } from "../types";
 /*****************************************************************************
  * A program's genotype is the set of genes that it carries,
  * and the blueprint by which they are combined (its species).
@@ -38,19 +36,6 @@ import { TypedObject } from "./typed-object";
 * in that world.
 * *****************************************************************************/
 
-export type ProgramReturnType = number;
-
-export type Code = {
-    unprocessedCode: string;
-    preProcessor?: (args: ProgramArguments, unprocessedCode: string)=>string;
-}
-
-
-export interface ProgramType {
-    readonly language?: string;
-    readonly typeSignature: TypeSignature;
-    readonly code: Code;
-}
 
 /******************************************************************************/
 const _asString = (
