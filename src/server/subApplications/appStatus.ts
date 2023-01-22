@@ -8,6 +8,7 @@ export const appStatusSubApp: IApplication = (() => {
 
     return {
         name: "status",
+        update: () => Promise.resolve(),
         appData: () => {
             const payload = {};
             Object.assign(payload, {status: {
