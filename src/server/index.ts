@@ -2,31 +2,24 @@ import path from "path";
 import express, { Express } from "express";
 import dotenv from "dotenv";
 import { newIndexRouter } from "../../routes/index";
-import { NeuronFacApp } from "./types";
+import { IApplication, NeuronFacApp } from "./types";
+import { appStatusSubApp } from "./subApplications/appStatus";
+import { errorSubApp } from "./subApplications/appErrors";
 
 
 dotenv.config();
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 const expressApp: Express = express();
 const rootDirPath = path.join(__dirname, "../../../");
-console.log(rootDirPath);
 
+const neuronFacApp = new NeuronFacApp(
+    expressApp, 
+    rootDirPath
+    );
 
-expressApp.use(express.json());
-expressApp.use(express.urlencoded({ extended: true }));
-
-
-
-expressApp.set("views", path.join(rootDirPath, "views"));
-expressApp.set("view engine", "hbs");
-expressApp.use(express.static(path.join(rootDirPath, "public")));
-
-const neuronFacApp: NeuronFacApp = {
-    expressApp,
-    path: rootDirPath,
-}; // end neuronFacApp
-
-["", "gp"].map(route => newIndexRouter(route, neuronFacApp));
+["", "gp"].map(route => newIndexRouter(route, neuronFacApp, null));
+newIndexRouter("error", neuronFacApp, errorSubApp);
+newIndexRouter("status", neuronFacApp, appStatusSubApp);
 
 expressApp.listen(port, () => {
     console.log(`⚡️[server]: Server is running at https://localhost:${port}`);
