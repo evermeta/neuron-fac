@@ -1,4 +1,5 @@
 import { IApplication } from "../types";
+import {cpuUsage, cpuCount, freemem, totalmem, freememPercentage}  from 'os-utils'; 
 
 export const appStatusSubApp: IApplication = (() => {
     let timeAlive = 0;
@@ -13,7 +14,11 @@ export const appStatusSubApp: IApplication = (() => {
             const payload = {};
             Object.assign(payload, {status: {
                 timeAlive,
-                script: "alert('hello world')"
+                script: "alert('hello world')", 
+                cpuCount: cpuCount(),
+                freemem: freemem(),  
+                currentMemoryUsage: freemem(),
+                totalMemory: totalmem()
             }}) ;
             return Promise.resolve(payload);
         }

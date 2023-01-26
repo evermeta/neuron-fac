@@ -1,16 +1,19 @@
-export const arrowDelimiter = '=>';
-export type TypeSignature = string;
+import { TypeSignature } from "./type-signature-class";
 
 export const getArguments = (typeSignature: TypeSignature) => {
-    const args = typeSignature
-        .split(arrowDelimiter)
-        .map(args => args.trim()) ;
+    const args = typeSignature.expression
+        .split(TypeSignature.defaultArrowDelimiter)
+        .map(args => args.trim());
+
     const returnValue = args.pop(); 
+    
     return {
         programArgument: args, 
         returnValue
     };
 }
+
+
 
 /*const context = (function () {
     let names, generateIndex;

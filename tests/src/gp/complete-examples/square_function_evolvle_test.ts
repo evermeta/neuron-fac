@@ -1,8 +1,6 @@
 import { expect } from "chai";
-import { jsCompiler } from "../../../../src/gp/programs/compilers";
-import { ProgramArguments } from "../../../../src/gp/programs/program-arguments/types";
+import { ProgramArguments } from "../../../../src/gp/programs/program-arguments/program-arguments";
 import { Program } from "../../../../src/gp/programs/program-class";
-import { partialApplication } from "../../../../src/gp/programs/program-combinators/combinators";
 import { readCSVFromFile } from "../../../../src/utils/files/csv";
 
 const newJSOneLinerProgram = (programArguments: ProgramArguments, code: string) => new Program(
@@ -13,6 +11,7 @@ const newJSOneLinerProgram = (programArguments: ProgramArguments, code: string) 
 );
 
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const programAdd = newJSOneLinerProgram( { 
     a: { type: "number", index: 0 },
     b: { type: "number", index: 1 } 

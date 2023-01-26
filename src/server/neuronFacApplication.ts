@@ -30,6 +30,12 @@ export class NeuronFacApp implements INeuronFacApp {
                     : null ;
         }  
 
+    public async start(port: number) {
+        this.expressApp.listen(port, () => {
+            console.log(`⚡️[server]: Server is running at https://localhost:${port}`);
+        });
+    }
+
     public addSubApp(route: string, subApp: IApplication) {
         this.subApps[route] = subApp;
     }

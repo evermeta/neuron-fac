@@ -8,14 +8,18 @@ import { NeuronFacApp } from "./neuronFacApplication";
 
 
 dotenv.config();
-const port = process.env.PORT || 3000;
+const port = +(process.env.PORT as string) || 3000;
 const expressApp: Express = express();
 const rootDirPath = path.join(__dirname, "../../../");
 
 const neuronFacApp = new NeuronFacApp(
     expressApp, 
     rootDirPath, 
-    {}
+    {
+        globalClientScript : async ()=>{
+            return 'a+=1';
+        }
+    }
     );
 
 ["", "gp"].map(route => newIndexRouter(route, neuronFacApp, {
@@ -38,6 +42,4 @@ newIndexRouter("chromeless", neuronFacApp, {
     renderView: false
 });
 
-expressApp.listen(port, () => {
-    console.log(`⚡️[server]: Server is running at https://localhost:${port}`);
-});
+neuronFacApp.start(port);

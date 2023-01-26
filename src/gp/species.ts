@@ -3,6 +3,10 @@ import { Program } from "./programs/program-class";
 import { Set } from "../utils/math/sets/types";
 
 export type SpeciesID = string;
+export interface ProgramSpecies {
+    program: Program;
+    species: SpeciesID;
+}
 
 export interface Species extends Set {
     recombinationFunction: (programs: Program[], genePool: GenePool) => Program[];
