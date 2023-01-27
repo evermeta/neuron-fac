@@ -1,5 +1,6 @@
 import express from "express";
 import path from "path";
+import { ApplicationContainer } from "./class-application-container";
 import { INeuronFacApp, IApplication } from "./types";
 
 const setupStack = (expressApp: express.Express, applicationTopLevelPath: string) => {
@@ -10,10 +11,11 @@ const setupStack = (expressApp: express.Express, applicationTopLevelPath: string
     expressApp.use(express.static(path.join(applicationTopLevelPath, "public")));
  };
       
-export class NeuronFacApp implements INeuronFacApp {
-    public expressApp   : express.Express ;
-    public path         : string ;
-    private subApps     : Record<string, IApplication> = {} ;
+export class NeuronFacApp extends ApplicationContainer implements INeuronFacApp{
+    public expressApp      : express.Express ;
+    public path            : string ;
+    private subApps        : Record<string, IApplication> = {} ;
+    private executableApps : Record<string, (command: string, options: Record<string, unknown>)=>Promise<void>> = {} ;
     private globalClientScript: (()=>Promise<string>) | null;
 
     constructor( 
@@ -22,6 +24,7 @@ export class NeuronFacApp implements INeuronFacApp {
         options:{
             globalClientScript?: ()=>Promise<string>,
         } ) {
+                super("NeuronFac", ""); 
                 this.path = applicationTopLevelPath ;
                 this.expressApp = expressApp ; 
                 setupStack(this.expressApp, this.path);
@@ -36,7 +39,7 @@ export class NeuronFacApp implements INeuronFacApp {
         });
     }
 
-    public addSubApp(route: string, subApp: IApplication) {
+    public addSubApps(route: string, subApp: IApplication) {
         this.subApps[route] = subApp;
     }
 
@@ -53,7 +56,7 @@ export class NeuronFacApp implements INeuronFacApp {
             message: "Welcome to NeuronFac"
         };
         if(this.subApps[route]) {
-            const subAppServerData = await this.subApps[route].appData();
+            const subAppServerData = await this.subApps[route].data();
             return {...globalServerData, ...subAppServerData};
         }
         return globalServerData;

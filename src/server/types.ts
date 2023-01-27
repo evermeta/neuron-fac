@@ -2,15 +2,37 @@
 
 *******************************************************************************/
 import express from "express" ;
-import path from "path";
 
 export type AppData = Record<string, unknown>;
 
+export type ExecuteOptions = Record<string, unknown>;
+export type StartOptions = Record<string, unknown>;
+export type UpdateOptions = {};
+export type ApplicationRoute = string;
+
 export interface IApplication {
-    name: string;
-    update(): Promise<void>;
-    appData(): Promise<AppData>;
+    readonly name: string;
+    readonly route: ApplicationRoute;
+
+    execute?: (command: string, options: ExecuteOptions)=>Promise<void>;
+    start?: (options: StartOptions)=>Promise<void>;
+    update?:(options: UpdateOptions)=>Promise<void>;
+    data(route?:string): Promise<AppData>;
 }
+
+
+export interface MultiAppUpdateOptions extends UpdateOptions {
+    subApplications: 'all' | 'none' | ApplicationRoute[];
+}
+
+
+export interface IApplicationContainer extends IApplication{
+    readonly subApplications: Record<string, IApplication>;
+    addSubApplication: (subApp: IApplication) => void;
+    update: (options: MultiAppUpdateOptions | UpdateOptions)=>Promise<void>;
+}
+
+
 
 export type AppServerData = AppData 
 

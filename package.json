@@ -29,7 +29,8 @@
         "os-utils": "0.0.14",
         "tinycolor2": "^1.5.2",
         "uuid": "^3.4.0",
-        "watchify": "^4.0.0"
+        "watchify": "^4.0.0",
+        "winston": "^3.8.2"
     },
     "devDependencies": {
         "@types/chai": "^4.3.4",

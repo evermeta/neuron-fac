@@ -4,7 +4,9 @@ import dotenv from "dotenv";
 import { newIndexRouter } from "../../routes/index";
 import { appStatusSubApp } from "./subApplications/appStatus";
 import { errorSubApp } from "./subApplications/appErrors";
+import { appOutput} from "./subApplications/appOutput";
 import { NeuronFacApp } from "./neuronFacApplication";
+import { appTimerSubApp } from "./subApplications/appTimer";
 
 
 dotenv.config();
@@ -22,10 +24,23 @@ const neuronFacApp = new NeuronFacApp(
     }
     );
 
-["", "gp"].map(route => newIndexRouter(route, neuronFacApp, {
+( async ()=>{
+    if(appOutput.execute){
+        await appOutput.execute('out', {
+            message: 'Starting NeuronFac application'
+        });
+    }
+
+["", "gp", "github"].map(route => newIndexRouter(route, neuronFacApp, {
     subApp: null, 
     renderView: true
 }));
+
+newIndexRouter("clock", neuronFacApp, {
+    subApp: appTimerSubApp,
+    renderView: false 
+});
+
 
 newIndexRouter("error", neuronFacApp, {
     subApp: errorSubApp,
@@ -43,3 +58,5 @@ newIndexRouter("chromeless", neuronFacApp, {
 });
 
 neuronFacApp.start(port);
+
+})();

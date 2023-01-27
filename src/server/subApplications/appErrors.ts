@@ -2,8 +2,9 @@ import { IApplication } from "../types";
 
 export const errorSubApp: IApplication = {
     name: "error",
+    route: "error",
     update: () => Promise.resolve(),
-    appData: () => {
+    data: () => {
         const payload = {};
         Object.assign(payload, {error: {
             status: "ACTIVE",

@@ -1,5 +1,12 @@
+/*******************************************************************************
+ * Application used to provide information about the server
+ * status.
+ * 
+ * https://gist.github.com/franckEinstein90/f9cefcb833a36d8d367b75ed66a99a82
+ ******************************************************************************/
 import { IApplication } from "../types";
 import {cpuUsage, cpuCount, freemem, totalmem, freememPercentage}  from 'os-utils'; 
+
 
 export const appStatusSubApp: IApplication = (() => {
     let timeAlive = 0;
@@ -8,9 +15,10 @@ export const appStatusSubApp: IApplication = (() => {
     }, 1000);
 
     return {
+        route: "status",
         name: "status",
         update: () => Promise.resolve(),
-        appData: () => {
+        data: () => {
             const payload = {};
             Object.assign(payload, {status: {
                 timeAlive,

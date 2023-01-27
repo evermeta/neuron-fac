@@ -39,7 +39,7 @@ export const newIndexRouter = (
 
     app.expressApp.use(expressRouter);
     if(options.subApp) {
-        app.addSubApp(httpRootPath, options.subApp);
+        app.addSubApps(httpRootPath, options.subApp);
     }
 
     return {
