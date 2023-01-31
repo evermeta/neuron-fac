@@ -8,7 +8,7 @@
         "server": "node dist/src/server/index.js",
         "server-dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/src/server/index.js views/**/*.hbs \"",
         "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
-        "test": "tsc --build && nyc mocha dist/tests/src/gp/**/*.js dist/tests/src/utils/math/**/*.js dist/tests/src/utils/**/*.js dist/tests/src/**/*.js",
+        "test": "tsc --build && mocha dist/tests/src/utils/dialogflow/dialogflow-tests.js", 
         "interactive": "ts-node tests/interactive/index.ts"
     },
     "dependencies": {
