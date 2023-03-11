@@ -1,15 +1,15 @@
 import { expect } from "chai";
-import { ProgramArguments } from "../../../../../src/gp/programs/program-arguments/program-arguments";
 import { Program } from "../../../../../src/gp/programs/program-class";
 import { partialApplication } from "../../../../../src/gp/programs/program-combinators/combinators";
+import { ProgramArguments } from "../../../../../src/gp/types";
 /******************************************************************************/
 
 const _p = (testDescription: string[]) => testDescription.join(" ");
 
 const testArgumentsOne = { 
-    c_1: { type: "number", index: 0 }, 
-    c_2: { type: "number", index: 1 }, 
-    theta: { type: "number", index: 2 } 
+    c_1:    { type: "Number", index: 0 }, 
+    c_2:    { type: "Number", index: 1 }, 
+    theta:  { type: "Number", index: 2 } 
 };
 
 const newOneLineProgram = (code: string) => 
@@ -17,7 +17,7 @@ const newOneLineProgram = (code: string) =>
         new Program(
             "jsOneLiner",
             progArguments,
-            "number",
+            "Number",
             code
         );
 /******************************************************************************/
@@ -27,12 +27,12 @@ describe("Program::toString()", () => {
             "in a human readable version, Test One"]), () => {
 
         const program = newOneLineProgram("b*3") (
-            { b: { type: "number", index: 0 }}
+            { b: { type: "Number", index: 0 }}
         );
         const programAsString = program.toString();
         expect(programAsString).to.deep.equal([
-            "//Type Signature: (number) => number",
-            "b:number",
+            "//Type Signature: Number => Number",
+            "b:Number",
             "b*3"
         ]); 
     });
@@ -41,13 +41,13 @@ describe("Program::toString()", () => {
             "in a human readable version, Test Two"]), () => {
 
         const program = newOneLineProgram("b*c")(
-            {   c: { type: "number", index: 0 }, 
-                b: { type: "number", index: 1 } 
+            {   c: { type: "Number", index: 0 }, 
+                b: { type: "Number", index: 1 } 
             });
         const programAsString = program.toString();
         expect(programAsString).to.deep.equal([
-            "//Type Signature: (number) => (number) => number",
-            "c:number,b:number",
+            "//Type Signature: Number => Number => Number",
+            "c:Number,b:Number",
             `b*c`,
         ]);
     }); 
@@ -60,15 +60,15 @@ describe("Program::toString()", () => {
         const p1 = new Program(
             "jsOneLiner",
             testArgumentsOne,
-            'number',
+            'Number',
             { unprocessedCode: functionAsString }
         );
 
         const programAsString = (partialApplication(p1,{theta: 3})).toString();
 
         expect(programAsString).to.deep.equal([
-            "//Type Signature: (number) => (number) => number",
-            "c_1:number,c_2:number",
+            "//Type Signature: Number => Number => Number",
+            "c_1:Number,c_2:Number",
             `(theta => ${functionAsString})(3)`,
         ]);
     }); 
@@ -82,7 +82,7 @@ describe("Program::toString()", () => {
         const p1 = new Program(
                 "jsOneLiner",
                 testArgumentsOne,
-                'number',
+                'Number',
                 { unprocessedCode: functionAsString }
         );
     
@@ -91,8 +91,8 @@ describe("Program::toString()", () => {
         ).toString();
     
         expect(programAsString).to.deep.equal([
-                "//Type Signature: (number) => number",
-                "c_2:number",
+                "//Type Signature: Number => Number",
+                "c_2:Number",
                 `(c_1 => (theta => ${functionAsString})(3))(2)`,
         ]);
     })

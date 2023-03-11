@@ -1,10 +1,10 @@
-import { ProgramArguments } from "../program-arguments/program-arguments";
-import { Program, ProgramReturnType } from "../program-class";
+import { ProgramArguments, ProgramReturnType } from "../../types";
+import { Program} from "../program-class";
 
 export type PreProcessor = (
     args: ProgramArguments, 
     unprocessedCode: string | string[], 
-    argArrayName?:string)=>string; 
+    argArrayName?:string)=>string[]; 
     
 export type ExecProcess = (input: unknown[]) => ProgramReturnType;
 

@@ -8,16 +8,16 @@ describe("population, making a new instance", () => {
         
         const program = new Program(
             "js", 
-            { a: { index: 0, type: "number" } }, 
-            "number","");
+            { a: { index: 0, type: "Number" } }, 
+            "Number","");
         expect(program.ID).to.be.a("string");
         expect(program.ID.length).to.be.eq(36);
     });
 
     it(`However, if there is a speciesID in its building options, it will only store 
     programs that contain that speciedID`, () => {
-        const program = new Program("js", { a: { index: 0, type: "number" } }, 
-            "number",
+        const program = new Program("js", { a: { index: 0, type: "Number" } }, 
+            "Number",
             "", 
             { speciesID: "foo" });
 

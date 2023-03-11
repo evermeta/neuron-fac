@@ -9,26 +9,47 @@
 * Ultimately, the function returns a single string of javascript code that 
 * can be executed by any javascript engine. 
 * *****************************************************************************/
-
+import _ from "lodash";
 import { ExecProcess, PreProcessor } from "./preprocessor-types";
-import { ProgramArgument, ProgramArguments } from "../program-arguments/program-arguments";
 import { Program } from "../program-class";
+import { ProgramArgument, ProgramArguments } from "../../types";
 /******************************************************************************/
+
+export const programSectionDivider = "/*****************************************************************************/";
+
+const _typeGuard = (argType: string, argName: string) => {
+    switch (argType) {
+        case "Number":
+            return `if(typeof ${argName} !== 'number') throw new Error('Type Error: Expected a number');`;
+        case "String":
+            return `if(typeof ${argName} !== 'string') throw new Error('Type Error: Expected a string');`;
+        case "Boolean":
+            return `if(typeof ${argName} !== 'boolean') throw new Error('Type Error: Expected a boolean');`;
+        default:
+            return "";
+    }
+};
 
 export const oneLinerCodePreprocessor: PreProcessor = (
     inputs: ProgramArguments, 
     unprocessedCode: string | string[], 
     argArrayName
-): string => {
-     
-    const compilerHeaderCode = Object.keys(inputs)
-    .filter((argName) => argName !== 'TypeVariable')
-    .sort((a, b) => (inputs[a] as ProgramArgument).index 
-            - (inputs[b] as ProgramArgument).index)
-    .map((inputName) => {
-            const input = inputs[inputName] as ProgramArgument;
-            return `const ${inputName}=${argArrayName}[${input.index}];`;
-        }).join("\n");
+): string[] => {
+
+    const programVariableNames = Object.keys(inputs)
+        .filter((argName) => argName !== 'TypeVariable')
+        .map((argName) => ({
+            index: (inputs[argName] as ProgramArgument).index,
+            name: argName,
+            argType: (inputs[argName] as ProgramArgument).type,
+        }))
+        .sort((a, b) => a.index - b.index);
+
+    const compilerHeaderCode = _.flatten(programVariableNames 
+        .map((input) => [
+            `const ${input.name}=${argArrayName}[${input.index}];`,
+            _typeGuard(input.argType, input.name)
+        ]));
     /**************************************************************************/ 
 
     if(Array.isArray(unprocessedCode)) {
@@ -38,9 +59,9 @@ export const oneLinerCodePreprocessor: PreProcessor = (
 
     return [
         `/** Program Inputs **/`,
-        compilerHeaderCode,
-        `/${Array(78).join('*')}/`,
-        `return ${unprocessedCode};`].join("\n");
+        ...compilerHeaderCode,
+        programSectionDivider,
+        `return ${unprocessedCode};`]
  };
 /******************************************************************************/ 
 /******************************************************************************/ 
@@ -55,7 +76,7 @@ const _jsOneLinerCompiler = (p: Program): ExecProcess => {
         functionArgumentName); 
     /**************************************************************************/
 
-    const executable = new Function( functionArgumentName, processedCode );
+    const executable = new Function( functionArgumentName, processedCode.join('\n') );
     return (context: unknown) => executable(context);
 };
 

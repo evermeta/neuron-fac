@@ -5,19 +5,16 @@
  * ****************************************************************************/
 
 import { ObjectWithUUID } from "../../utils/uuid";
-import { ProgramArguments } from "./program-arguments/program-arguments";
+import * as Types from "../types";
+import { ProgramArguments } from "../types";
 import { 
     TypeSignature, 
     typeSignatureFromProgramArguments 
 } from "./program-arguments/type-signature-class";
 /******************************************************************************/
 
-interface ITypedObject {
-    typeSignature: TypeSignature
-    inputs: ProgramArguments
-}
 
-export class TypedObject extends ObjectWithUUID implements ITypedObject {
+export class TypedObject extends ObjectWithUUID implements Types.ITypedObject {
 
     public readonly typeSignature: TypeSignature;
     public readonly inputs: ProgramArguments;

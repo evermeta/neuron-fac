@@ -7,7 +7,6 @@ import {
 } from "../population";
 import { EvaluationGrade} from "../types";
 import { Program } from "./program-class";
-import { Species } from "../species";
 
 const POPULATION_SIZE = 100;
 const SELECTION_SIZE = 10;
@@ -20,7 +19,6 @@ export class ProgramPopulation extends PopulationPrototype {
     protected replacementFunction: ReplacementFunction;
 
     constructor(
-        species: Species,
         evaluationFunction: EvaluationFunction,
         selectionFunction: SelectionFunction,
         replacementFunction: ReplacementFunction
