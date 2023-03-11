@@ -6,28 +6,26 @@ import { NeuronFacApp } from "./types";
 
 
 dotenv.config();
-const port = process.env.PORT;
-const expressApp: Express = express();
-const rootDirPath = path.join(__dirname, "../../../");
-console.log(rootDirPath);
-
-
-expressApp.use(express.json());
-expressApp.use(express.urlencoded({ extended: true }));
-
-
-
-expressApp.set("views", path.join(rootDirPath, "views"));
-expressApp.set("view engine", "hbs");
-expressApp.use(express.static(path.join(rootDirPath, "public")));
 
 const neuronFacApp: NeuronFacApp = {
-    expressApp,
-    path: rootDirPath,
+    name: "NeuronFac",
+    expressApp: express(),
+    path: path.join(__dirname, "../../../")
 }; // end neuronFacApp
+
+const port = process.env.PORT;
+
+
+neuronFacApp.expressApp.use(express.json());
+neuronFacApp.expressApp.use(express.urlencoded({ extended: true }));
+neuronFacApp.expressApp.set("views", path.join(neuronFacApp.path, "views"));
+neuronFacApp.expressApp.set("view engine", "hbs");
+neuronFacApp.expressApp.use(express.static(
+    path.join(neuronFacApp.path, "public")));
+
 
 ["", "gp"].map(route => newIndexRouter(route, neuronFacApp));
 
-expressApp.listen(port, () => {
+neuronFacApp.expressApp.listen(port, () => {
     console.log(`⚡️[server]: Server is running at https://localhost:${port}`);
 });

@@ -3,8 +3,13 @@
 *******************************************************************************/
 import express from "express" ;
 
-export interface NeuronFacApp {
-    expressApp  : express.Express ;
+
+export interface ExpressApp {
+    expressApp  : express.Express;
+    name        : string ;
+}
+
+export interface NeuronFacApp extends ExpressApp{
     path        : string ;
 }
 
