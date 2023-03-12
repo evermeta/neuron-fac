@@ -2,6 +2,22 @@ import * as readline from "readline";
 import { Console } from "../types";
 import { Command, Payload } from "../../commands/types";
 
+const makeHelp: (commands: Command[]) => Command = (commands) => ({
+    name: "help",
+    action: () => {
+        console.log("Available commands:");
+        console.log("help: show this help");
+        console.log("close: exit interactive mode");
+        commands.forEach((command) => {
+            console.log(command.name);
+            if(command.help !== undefined) {
+                console.log(`    ${command.help}`);
+            }
+        });
+        return Promise.resolve();
+    },
+});
+
 export class ConsoleInteractive implements Console {
     private prompt: string;
     private readline: readline.Interface;
@@ -9,7 +25,8 @@ export class ConsoleInteractive implements Console {
 
     constructor(prompt = "> ", commands: Command[] = []) {
         this.prompt = prompt;
-        this.commands = commands;
+        this.commands = [...commands];
+        this.commands.push(makeHelp(this.commands));
         this.readline = readline.createInterface({
             input: process.stdin,
             output: process.stdout,
