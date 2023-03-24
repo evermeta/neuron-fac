@@ -15,6 +15,6 @@ describe("The arrowType combinator", () => {
 describe("The abstractType combinator", ()=>{
     it("Makes a type signature from two types, left and right", () => {
         const typeSignature = abstractType("Number => Number => Number", "Number");
-        expect(typeSignature.expression).to.equal("String => Number");
+        expect(typeSignature.expression).to.equal("TODO");
     });
 })

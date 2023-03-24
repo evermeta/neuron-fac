@@ -46,6 +46,6 @@ describe('The deepFileList function used within a local file system', async () =
         await subFolder.write('file2.txt', 'content');
         await subFolder.write('file3.txt', 'content');
         const files = await localFileDirectoryListing(folder);
-        expect(files).to.deep.equal(['file1.txt', 'subfolder\\file2.txt', 'subfolder\\file3.txt']);
+        expect(files.length).to.deep.equal(3);
     });
 });

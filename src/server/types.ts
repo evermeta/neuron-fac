@@ -39,6 +39,7 @@ export type AppServerData = AppData
 export interface INeuronFacApp {
     expressApp  : express.Express ;
     path        : string ;
+    port        : number ;
     appServerData(route: string): Promise<AppServerData> ; 
 }
 

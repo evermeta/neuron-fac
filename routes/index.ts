@@ -22,6 +22,7 @@ export const newIndexRouter = (
     const expressRouter = express.Router( );
     const viewPath = route === "" ? "index" : route ;
     const httpRootPath = `/${route}` ;
+    const renderView = options.renderView ? options.renderView : false;
 
     const limiter = rateLimit({
         windowMs: 15 * 60 * 1000, // 15 minutes
@@ -32,8 +33,10 @@ export const newIndexRouter = (
 
     expressRouter.get(httpRootPath, async (req: Request, res: Response) => {
         const appServerData = await app.appServerData(httpRootPath);
-        if(options.renderView){
+        if(renderView){
             res.render(viewPath, appServerData);
+        } else {
+            res.send(appServerData);
         }
     });
 

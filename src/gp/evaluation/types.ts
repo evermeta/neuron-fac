@@ -1,3 +1,4 @@
+import { Matrix } from "../../utils/math/algebra/matrix";
 import { Percentage } from "../../utils/math/proportions/types";
 import { Program } from "../programs/program-class";
 

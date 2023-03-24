@@ -3,19 +3,17 @@
   <head>
     <title>{{title}}</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
-<!--  AUI Core -->
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 <script src="//aui-cdn.atlassian.com/aui-adg/6.0.9/js/aui.min.js"></script>
 <link rel="stylesheet" href="//aui-cdn.atlassian.com/aui-adg/6.0.9/css/aui.min.css" media="all">
 
-<!-- AUI Experimental components -->
  <link rel="stylesheet" href="//aui-cdn.atlassian.com/aui-adg/6.0.9/css/aui-experimental.min.css" media="all">
  <script src="//aui-cdn.atlassian.com/aui-adg/6.0.9/js/aui-experimental.min.js"></script>
 
-<!-- AUI Datepicker and Soy templates -->
     <script src="//aui-cdn.atlassian.com/aui-adg/6.0.9/js/aui-datepicker.min.js"></script>
     <script src="//aui-cdn.atlassian.com/aui-adg/6.0.9/js/aui-soy.min.js"></script>
     <script>{{{commonScript}}}</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
  </head>
  
  <body style="
@@ -29,6 +27,5 @@
                 overflow:hidden">
         {{{body}}}
     </div>
-    <script src="/javascripts/lib/bundle.js"></script>
   </body>
 </html>

@@ -12,7 +12,6 @@ import { thisPage } from '../../../../src/utils/process/types';
 
 dotenv.config()
 /*******************************************************************************/
-
 const testSuite = async ()=>{
     describe('nameOfPage', () => {
         it('should return the name of the page', () => {
@@ -20,6 +19,13 @@ const testSuite = async ()=>{
         });
     });
 }
+
+describe("Variable Environments", () => {
+    it("My .env file contains the test variable 'TEST_VAR'", () => {
+        expect(process.env.TEST_VAR).to.eq("test");
+    });
+});
+
 
 if(process.env.GITHUB_TOKEN) {
     console.log(`GITHUB_TOKEN is set for tests at ${thisPage()}`);

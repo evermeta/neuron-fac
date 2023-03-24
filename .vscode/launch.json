@@ -7,19 +7,39 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Mocha Tests",
+            "name": "Tests - temp tests",
             "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+            "env": {
+                "NODE_ENV": "test"
+            },
             "args": [
                 "--require", "ts-node/register",
                 "--timeout", "999999",
                 "--colors", "--recursive",
-                "${workspaceFolder}/tests/src/utils/dialogflow/**/*.ts"
-            ]
+                "${workspaceFolder}/tests/src/chatGPT-tests/**/*.ts"
+            ],
+            "internalConsoleOptions": "openOnSessionStart"
         },  
         {
             "type": "node",
             "request": "launch",
-            "name": "Tests - Utils",
+            "name": "Tests - gp Module",
+            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+            "env": {
+                "NODE_ENV": "test"
+            },
+            "args": [
+                "--require", "ts-node/register",
+                "--timeout", "999999",
+                "--colors", "--recursive",
+                "${workspaceFolder}/tests/src/gp/**/*.ts"
+            ],
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Tests - Utils Module",
             "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
             "env": {
                 "NODE_ENV": "test"

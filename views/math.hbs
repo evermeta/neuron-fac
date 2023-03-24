@@ -1,0 +1,232 @@
+<h1>Sort Algorithm <span id="algorithmIndex">1</span></h1>
+<ul>
+<li>Swap operations: <span id="swaps">0</span></li>
+<li>Comparisons: <span id="comparisons">0</span></li>
+</ul>
+<script type="module">
+	import * as THREE from 'https://unpkg.com/three/build/three.module.js';
+
+    const gt = (a,b) => a > b;
+	const scene = new THREE.Scene();
+	const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+	const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+    const startx = -250;
+
+    const system = ((
+        numberOfPoints = 500
+    ) => {
+        const yMax = 200;
+        const step = -2 * startx / numberOfPoints; 
+        let point_y = []; 
+        const isSorted = ()=>{
+            let i = 0;
+            while(i < point_y.length - 1){
+                if(point_y[i] > point_y[i + 1]){
+                    return false;
+                }
+                i++;
+            }
+            return true;
+        }
+
+        const fillArray = ()=>{
+            let i = 0;
+            while(i < numberOfPoints){
+                point_y.push(Math.random() * (yMax - 1) + 1);
+                i++;
+            }
+        }; 
+        
+        let algorithmIndex = 0;
+        const reset = ()=>{
+            point_y.length = 0;
+            fillArray(); 
+            algorithmIndex = algorithmIndex + 1 < sortAlgorithms.length 
+                ? algorithmIndex + 1 
+                : 0;
+            document.getElementById('algorithmIndex').innerHTML = algorithmIndex;
+            document.getElementById('swaps').innerHTML = 0;
+            document.getElementById('comparisons').innerHTML = 0;
+        };
+        const compare = (operation, a, b) => {
+            const comparisons = +document.getElementById('comparisons').innerText + 1;
+            document.getElementById('comparisons').innerHTML = comparisons;
+            return operation(a, b);
+        };
+        const swap = (i, j) => {
+            const swaps = +document.getElementById('swaps').innerText + 1;
+            document.getElementById('swaps').innerHTML = swaps;
+            let temp = point_y[i];
+            point_y[i] = point_y[j];
+            point_y[j] = temp;
+        };   
+        const merge = (left, right) => {
+                const result = [];
+                let rightIdx = 0;
+                left.forEach(l => {
+                   while(right[rightIdx] < l && rightIdx < right.length){
+                       result.push(right[rightIdx]);
+                       rightIdx++;
+                   }
+                   result.push(l);
+                });
+                while(rightIdx < right.length){
+                    result.push(right[rightIdx]);
+                    rightIdx++;
+                }
+                return result; 
+        };
+        const shuffleOne = ()=>{
+            let i = 0;
+            let found = false;
+            while(i < point_y.length - 1 && !found){
+                if(compare((a,b)=>a > b, point_y[i], point_y[i + 1])){
+                    swap(i, i+1); 
+                    found = true;
+                }
+            i++;
+            }
+            if(!found){
+                reset(); 
+            }
+        }
+        const shuffleTwo = (loopCounter)=>{
+            let i = 0;
+            let found = false;
+            while(i < point_y.length - 1){
+                if(compare(gt, point_y[i], point_y[i + 1])){
+                    swap(i, i+1); 
+                    found = true;
+                }
+                i++;
+            }
+            if(!found){
+                reset(); 
+            }
+        }
+        const shuffleThree = (loopCounter)=>{
+            const merge = (left, right) => {
+                const result = [];
+                let rightIdx = 0;
+                left.forEach(l => {
+                   while(right[rightIdx] < l && rightIdx < right.length){
+                       result.push(right[rightIdx]);
+                       rightIdx++;
+                   }
+                   result.push(l);
+                });
+                while(rightIdx < right.length){
+                    result.push(right[rightIdx]);
+                    rightIdx++;
+                }
+                return result; 
+            };
+            const sort = (subset) => {
+                if(subset.length <= 1){
+                    return subset;
+                }
+                if(loopCounter === 0 && subset.length === 2) {
+                    if(subset[0] > subset[1]){
+                        const temp = subset[1]; 
+                        subset[1] = subset[0];
+                        subset[0] = temp; 
+                    }
+                    return subset;
+                }
+                const left = subset.slice(0, subset.length / 2);
+                const right = subset.slice(subset.length / 2);
+                return merge(sort(left), sort(right));
+            }
+            const sorted = sort(point_y); 
+            point_y = sorted;
+        };
+        const shuffleFour = (loopCounter) => {
+            if(isSorted()){
+                reset();
+            }
+            if(loopCounter < 1) return;
+            let jump = loopCounter;
+            let index = 0;
+            const subsets = [];
+            let left = null;
+            while(index + jump < point_y.length){
+                if(left){
+                    const right = point_y.slice(index, index + jump);    
+                    subsets.push(merge(left, right));
+                    left = null;
+                } else {
+                    left = point_y.slice(index, index + jump);
+                }
+                index = index + jump; 
+            }
+            const final = subsets.length * jump * 2;
+            if(final < point_y.length && subsets.length > 0){
+                subsets[subsets.length - 1] = merge(subsets[subsets.length - 1], point_y.slice(final));
+            }
+            point_y = [];
+            subsets.forEach(s => point_y.push(...s));
+        }
+        const sortAlgorithms = [shuffleFour, shuffleTwo, shuffleOne];
+        return {
+            init: ()=>{
+                reset();
+            },
+            shuffle: (loopCounter) => sortAlgorithms[algorithmIndex](loopCounter),
+            points: () => point_y,
+            step,
+            reset
+        }
+
+    })();
+
+
+    const horizontalLign = ()=>{
+        const points = [];
+        points.push( new THREE.Vector3( startx, 0, 0 ) );
+        points.push( new THREE.Vector3( -startx, 0, 0 ) );
+        const geometry = new THREE.BufferGeometry().setFromPoints( points );
+        const line = new THREE.Line( geometry, material );
+        scene.add(line);
+    }
+   
+    const lines = [];
+    const verticalLine = (x, y) => {
+        const pls = [];
+        pls.push( new THREE.Vector3( x, 0, 0 ) );
+        pls.push( new THREE.Vector3( x, y, 0 ) );
+        const geometry4 = new THREE.BufferGeometry().setFromPoints( pls );
+        const line4 = new THREE.Line( geometry4, material );
+        lines.push(line4);
+        scene.add(line4);
+    }
+   
+
+	const renderer = new THREE.WebGLRenderer();
+	renderer.setSize( window.innerWidth, window.innerHeight );
+	document.body.appendChild( renderer.domElement );
+
+    system.init() ;
+    horizontalLign();
+    
+    camera.position.y = 80;
+	camera.position.z = 200;
+
+    let loopCounter = 0; 
+	const animate = () => {
+	    requestAnimationFrame( animate );
+        renderer.render( scene, camera );
+        lines.forEach((line, i) => {
+            scene.remove(line);
+            line.geometry.dispose();
+        });
+        lines.length = 0;
+        system.shuffle(loopCounter);
+        system.points().forEach((y, i) => {
+            verticalLine(startx + i * system.step, y);
+        });
+        loopCounter++; 
+	}
+
+	animate();
+</script>
+
