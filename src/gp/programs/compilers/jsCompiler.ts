@@ -10,7 +10,7 @@
 * can be executed by any javascript engine. 
 * *****************************************************************************/
 import _ from "lodash";
-import { ExecProcess, PreProcessor } from "./preprocessor-types";
+import { Compiler, ExecProcess, PreProcessor } from "./preprocessor-types";
 import { Program } from "../program-class";
 import { ProgramArgument, ProgramArguments } from "../../types";
 /******************************************************************************/
@@ -63,13 +63,16 @@ export const oneLinerCodePreprocessor: PreProcessor = (
         programSectionDivider,
         `return ${unprocessedCode};`]
  };
-/******************************************************************************/ 
-/******************************************************************************/ 
+
+export const _rawJsCompiler = (p: Program): ExecProcess => {
+
+    const executable = new Function(p.code.unprocessedCode);
+    return (context: unknown) => executable(context);
+};
 
 const _jsOneLinerCompiler = (p: Program): ExecProcess => {
 
     const functionArgumentName = '_x' + p.ID.replace(/-/g, '_');
-     //_jsFunctionArgumentNames(p.inputs); 
     const processedCode = oneLinerCodePreprocessor(
         p.inputs, 
         p.code.unprocessedCode,
@@ -80,12 +83,9 @@ const _jsOneLinerCompiler = (p: Program): ExecProcess => {
     return (context: unknown) => executable(context);
 };
 
-export const jsCompiler = (p: Program): ExecProcess => {
+export const jsCompiler: Compiler = (p: Program): ExecProcess => {
 
-    const supportedLanguages = ["jsOneLiner"];
-
-    if (!supportedLanguages.includes(p.language)) 
-        throw `Unsupported language ${p.language}`; 
-
-    return _jsOneLinerCompiler(p);
+    if(p.language === "jsOneLiner") return _jsOneLinerCompiler(p); 
+    if(p.language === "javascript") return _rawJsCompiler(p);
+    throw `Unsupported language ${p.language}`;
 };

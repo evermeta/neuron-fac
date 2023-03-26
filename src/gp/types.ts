@@ -27,7 +27,8 @@ export type ProgramArgument = {
     index: number;
 };
 
-export type ProgramArguments = Record<string, string | ProgramArgument>;
+export type ProgramArguments = 
+    Record<string, string | ProgramArgument>;
 
 export type ProgramInOut = {
     inputs: ProgramArguments;

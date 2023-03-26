@@ -115,8 +115,7 @@ export const atomicTypes = (
  Objects of type ProgramArguments are the inputs that a program takes, 
  indexed by position.
 ********************************************************************************/
-export const programArgumentsFromTypeSignature = 
-    (typeSignature: TypeSignature): ProgramArguments => {
+export const programArgumentsFromTypeSignature = (typeSignature: TypeSignature): ProgramArguments => {
 
         const args: ProgramArguments = {};
         const argTypes = typeSignature.expression.split(
@@ -127,5 +126,5 @@ export const programArgumentsFromTypeSignature =
         });
         return args;
 
-    };
+};
 

@@ -63,7 +63,7 @@ export class Program extends TypedObject implements ProgramType {
         public readonly language: string, 
         inputs: ProgramArguments = {}, 
         outputType = 'ProgramOutputType',
-        code: Code | string, 
+        code: Code | string | string[],
         options: {
             speciesID?: string
         }= {}
@@ -74,10 +74,15 @@ export class Program extends TypedObject implements ProgramType {
         if("speciesID" in options && options.speciesID !== undefined) {
             this.speciesID = options["speciesID"];
         }
-
-        this.code = typeof code === "string" 
+        if(Array.isArray(code)) {
+            this.code = {
+                unprocessedCode: code.join("\n")
+            };
+        } else {
+            this.code = typeof code === "string" 
             ? {unprocessedCode: code} 
             : code;
+        }
     }
 
     toString(): string[] {

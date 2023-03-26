@@ -1,8 +1,9 @@
 /******************************************************************************/
-
 import { ProgramArguments } from "../../types";
 /******************************************************************************/
 
+//Reorders the arguments in the object so that they are in order of index
+//and that there are no gaps in the index numbers
 export const renumberArgs = (args: ProgramArguments): ProgramArguments => {
     const argNames = Object.keys(args);
     if(argNames.some((argName) => typeof args[argName] === 'string')) {
