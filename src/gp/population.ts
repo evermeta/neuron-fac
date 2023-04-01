@@ -1,6 +1,5 @@
 import { Program } from "./programs/program-class";
 import { EvaluationGrade, GenePoolType} from "./types";
-import {Species} from "./species";
 import {ObjectWithUUID} from "../utils/uuid";
     
 /***********************************
@@ -10,7 +9,6 @@ import {ObjectWithUUID} from "../utils/uuid";
  */
  export interface PopulationType {
     genePool: GenePoolType;
-    species: Species;
 }
 
 export type SelectionFunction = (

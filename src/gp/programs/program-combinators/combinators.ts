@@ -1,14 +1,9 @@
-import { stringify } from "querystring";
+import { ProgramArguments } from "../../types";
 import { ExecProcess } from "../compilers/preprocessor-types";
-import { typeSignatureIsTypeAbstraction } from "../program-arguments/utils";
-import { ProgramArgument, ProgramArguments, renumberArgs } from "../program-arguments/program-arguments";
+import { renumberArgs } from "../program-arguments/program-arguments";
 import { Program } from "../program-class";
 /*****************************************************************************/
 
-type typeVariableInfo = {
-    typeVariableName: string;
-    type: string;
-};
 const _strReplaceIn = (
     replacementString: string,
     stringToReplace: string,  
@@ -71,7 +66,7 @@ const _programPartialApplication = (
 
         return new Program(
             p.language, renumberArgs(newProgInputs), 
-            'number', newCode,
+            'Number', newCode,
         );
     }; 
 

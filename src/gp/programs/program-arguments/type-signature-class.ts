@@ -1,4 +1,10 @@
-import { ProgramArgument, ProgramArguments, ProgramInOut } from "./program-arguments";
+import { tokenize } from "../../../utils/strings/tokenizer";
+import { ProgramArguments, ProgramArgument, ProgramInOut } from "../../types";
+import { parseTokens } from "./utils";
+
+
+
+
 
 const _expressionWithAbstraction = (
     typeVariableName: string, 
@@ -50,6 +56,12 @@ export const typeSignatureFromProgramArguments = (
         return _expressionWithoutTypeAbstraction(progArguments as Record<string, ProgramArgument>, returnType);
     }
 
+
+
+const _processExpression = (expression: string): string => {
+    return parseTokens(tokenize(expression));
+};
+
 export class TypeSignature {
 
     static defaultArrowDelimiter = '=>';
@@ -57,7 +69,7 @@ export class TypeSignature {
 
     constructor(expression: string | ProgramInOut ) {
         if (typeof expression === 'string'){
-            this.expression = expression;
+            this.expression = _processExpression(expression);
             return; 
         }
 

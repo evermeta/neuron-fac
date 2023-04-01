@@ -7,7 +7,8 @@ export type Token = {
 export const SYMBOLS = {
     lp : '<lParen>',
     rp : '<rParen>',
-    ra : '<rArrow>', 
+    ra : '<rArrow>',
+    dot: '<dot>', 
 };
 
 export const matchSymbol = (symbol: string | RegExp, char: string): boolean => {
@@ -15,7 +16,14 @@ export const matchSymbol = (symbol: string | RegExp, char: string): boolean => {
     return symbol.test(char);
 };
 
-const tkens = [
+
+
+export type TokenRecognizer = (input: string) => boolean;  
+
+const tkens : {
+    tokenRecognizer: TokenRecognizer;
+    symbol: (word: string) => string;
+}[] = [
 
     { pattern: /^[a-z]+$/, 
         symbol: (word: string) =>`lc<${word}>`},
@@ -36,7 +44,12 @@ const tkens = [
     /**************************************************************************/
     { pattern: /^<$/,      symbol: (word: string) =>`<lChevron>`},
     { pattern: /^>$/,      symbol: (word: string) =>`<rChevron>`},
-];
+].map(
+    ({pattern, symbol}) => ({
+        tokenRecognizer: (input: string) => pattern.test(input),
+        symbol
+    })
+);
 
 const preProcess = (input: string): string => {
     return input
@@ -57,7 +70,7 @@ export const tokenize = (input: string): string[] => {
     const result =  preProcess(input)
         .split(/\s+/)
         .map(word => {
-            const token = tkens.find(t => t.pattern.test(word));
+            const token = tkens.find(t => t.tokenRecognizer(word));
             return token
             ? token.symbol(word)
             : word;

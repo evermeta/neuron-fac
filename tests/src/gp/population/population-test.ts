@@ -1,14 +1,17 @@
 import { expect } from "chai";
 import { EvaluationFunction, PopulationPrototype } from "../../../../src/gp/population";
-import { ProgramArguments } from "../../../../src/gp/programs/program-arguments/program-arguments";
 import { Program } from "../../../../src/gp/programs/program-class";
+import { ProgramArguments } from "../../../../src/gp/types";
 
-const progInputs: ProgramArguments = {b: {index: 0, type: "number"}, c: {index: 1, type: "number"}};
+const progInputs: ProgramArguments = {
+    b: {index: 0, type: "Number"}, 
+    c: {index: 1, type: "Number"}
+};
 
 const testProgram = (code: string)=>new Program(
     'jsOneLiner', 
     progInputs, 
-    "number",
+    "Number",
     code);
  
 describe("The population class stores program", () => {

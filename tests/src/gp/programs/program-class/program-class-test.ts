@@ -44,21 +44,17 @@ The measure of success will be the a combination of the variety of programs that
 There are going to be several challenges, and I'm still working through them. In particular, I'm going to have to ensure that the programs produced do not contain
 infinite loops, syntax errors, runtime errors, type errors, etc.
 ***************************************************************/
-import { expect } from "chai";
-import { Program } from "../../../../../src/gp/programs/program-class";
-import { ProgramArguments } from "../../../../../src/gp/programs/program-arguments/program-arguments";
-import { jsCompiler } from "../../../../../src/gp/programs/compilers/jsCompiler";
 
-const newJSOneLinerProgram = (
-    programArguments: ProgramArguments, 
-    code: string
-    ) => new Program(
-        "jsOneLiner",
-        programArguments, 
-        "number",
-        code,
-    );
+import { expect } from "chai";
 /******************************************************************************/
+
+import { Program } from "../../../../../src/gp/programs/program-class";
+import { jsCompiler } from "../../../../../src/gp/programs/compilers/jsCompiler";
+import { newJSOneLinerProgram } from "../program-arguments/utils";
+import { atomicTypes } from "../../../../../src/gp/programs/program-arguments/utils";
+/******************************************************************************/
+
+const NumType = "Number";
 
 describe("The Program class", () => {
 
@@ -66,8 +62,8 @@ describe("The Program class", () => {
 
         const program = new Program(
             "js", 
-            { a: { index: 0, type: "number" }}, 
-            "number", "" );
+            { a: { index: 0, type: NumType }}, 
+            NumType, "" );
 
         expect(program.ID).to.be.a("string");
         expect(program.ID.length).to.be.eq(36);
@@ -75,16 +71,14 @@ describe("The Program class", () => {
 
     it("It corresponds to a process that can be executed using a compiler", () => {
         const program = newJSOneLinerProgram( 
-            { 
-                b: { type: "number", index: 0 } 
-            }, "b*3");
+            { b: { type: NumType, index: 0 } }, 
+            "b*3");
         const executableProgram = jsCompiler(program);
         expect(executableProgram([3])).to.deep.equal(9);
 
-
         const programTwo = newJSOneLinerProgram( { 
-            a: { type: "number", index: 0 },
-            b: { type: "number", index: 1 } 
+            a: { type: "Number", index: 0 },
+            b: { type: "Number", index: 1 } 
         }, "b*a");
 
         const executableProcessTwo = jsCompiler(programTwo);
@@ -94,7 +88,7 @@ describe("The Program class", () => {
 
     it("It can be transformed into an executable process using a compiler", () => {
         const program = newJSOneLinerProgram(
-            { b: { type: "string", index: 0 } },
+            { b: { type: "String", index: 0 } },
             "b.toString().length"
         );
         expect(jsCompiler(program)(["baba"])).to.deep.equal(4);
@@ -103,14 +97,14 @@ describe("The Program class", () => {
     it("The program can accept several arguments", () => {
 
         const programArguments = {
-            b: { type: "string", index: 0 },
-            c: { type: "number", index: 1 },
+            b: { type: "String", index: 0 },
+            c: { type: "Number", index: 1 },
         };
 
         const program = new Program(
             "jsOneLiner", 
             programArguments, 
-            "number",
+            "Number",
             "b.toString().length * c"
         );
 
@@ -119,15 +113,15 @@ describe("The Program class", () => {
 
     it("In any order", () => {
         const programArguments = {
-            d: { type: "number", index: 2 },
-            c: { type: "number", index: 1 },
-            b: { type: "string", index: 0 },
+            d: { type: "Number", index: 2 },
+            c: { type: "Number", index: 1 },
+            b: { type: "String", index: 0 },
         };
 
         const program = new Program(
             "jsOneLiner", 
             programArguments, 
-            "number",
+            "Number",
             "b.toString().length * c + d");
         
         expect(jsCompiler(program)(["bcba", 3, 3])).to.deep.equal(15);
@@ -136,31 +130,45 @@ describe("The Program class", () => {
    
 });
 
+describe("Programs can be compiled using the appropriate compiler. With regards to a given compiled program:", () => {
+    const program = newJSOneLinerProgram(
+            { b: { type: "String", index: 0 } },
+            "b.toString().length"
+    );
+ 
+    it("Returns the appropriate value based on its supplied arguments", () => {
+       const compiled = jsCompiler(program);
+        expect(compiled(["baba"])).to.deep.equal(4);
+    });
+
+    it('Checks that its arguments have the correct type', () => {
+        const compiled = jsCompiler(program);
+        expect(() => compiled([3])).to.throw();
+    });
+
+});
+
 describe("Program typeSignature property", () => {
     it("It returns the type signature of the program", () => {
-        const program = new Program(
-            "jsOneLiner",
-            { b: { type: "number", index: 0 } },
-            "number",
+        const program = newJSOneLinerProgram( 
+            { b: { type: NumType, index: 0 } },
             "b*3"
         );
-        expect(program.typeSignature.expression)
-            .to.deep.equal("(number) => number");
+        expect(program.typeSignature.expression).to.deep.equal(
+            "Number => Number"
+        );
+        const _atomicTypes= atomicTypes(program.typeSignature);
+        expect(_atomicTypes).to.deep.equal(["Number"]);
     });
 
     it("It returns the type signature of the program", () => {
         const progArgs = {
-            d: { type: "string", index: 1 },
-            b: { type: "number", index: 0 },
+            d: { type: "String", index: 1 },
+            b: { type: NumType, index: 0 },
         };
-        const program = new Program(
-            "jsOneLiner", 
-            progArgs, 
-            "number",
-            "b*3"
-        );
+        const program = newJSOneLinerProgram(progArgs, "b*3"); 
         expect(program.typeSignature.expression).to.deep.equal(
-            "(number) => (string) => number"
+            "Number => String => Number"
         );
     });
 });

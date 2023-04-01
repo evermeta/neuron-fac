@@ -25,7 +25,7 @@ describe("TestSuite class", () => {
 
         const program = new Program(
             "js", {}, 
-            "number",
+            "Number",
             {
                 unprocessedCode: "return 3;"
             });
