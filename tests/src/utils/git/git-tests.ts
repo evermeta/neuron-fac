@@ -1,10 +1,16 @@
-/*****************************************************************************/
+/*****************************************************************************
+ * 
+ * 
+ * **************************************************************************/
 
 import * as dotenv from "dotenv";
-import { expect } from "chai";
-import { IGitAuth, IGitApi } from "../../../../src/utils/git/types";
-import { gitHubApi } from "../../../../src/utils/git/gitHub/gitHub-api";
 /*****************************************************************************/
+
+import { expect } from "chai";
+/*****************************************************************************/
+
+import { IGitAuth, IGitApi } from "../../../../src/utils/git/gitHub-module-types";
+import { gitHubApi } from "../../../../src/utils/git/gitHub/gitHub-api";
 import { thisPage } from "../../../../src/utils/process/types";
 /*****************************************************************************/
 dotenv.config();
@@ -25,7 +31,8 @@ const testSuite = async (gitHubToken: string) => {
         it("can retrieve the pull requests for a given repo", async () => {
             const prs = await gitHubManager.pullRequests({
                 owner: "microsoft",
-                repo: "TypeScript",
+                name: "TypeScript",
+                description: "test repo",
             });
             expect(Array.isArray(prs)).to.be.true;
             expect(prs.every((pr) => typeof pr.id === "number")).to.be.true;
@@ -35,22 +42,19 @@ const testSuite = async (gitHubToken: string) => {
         it("can list all the branches for a given repo", async () => {
             const brs = await gitHubManager.branches({
                 owner: testRepo.owner, 
-                repo: testRepo.repo, 
+                name: testRepo.repo, 
+                description: "test repo",
             });
             expect(Array.isArray(brs)).to.be.true;
         });
         it("can create a new branche in a given repo", async () => {
             await gitHubManager.newBranch({
                 owner: testRepo.owner, 
-                repo: testRepo.repo, 
+                name: testRepo.repo, 
+                description: "test repo",
             }, 'test-branch');
             expect(1).to.equal(3);
         });
-
-
-
-
-
     });
 }
 
