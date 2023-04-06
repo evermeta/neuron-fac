@@ -23,13 +23,18 @@ export interface IApplication {
     update?: (options: UpdateOptions) => Promise<void> ;
     data: (route?: string) => Promise<AppData> ;
 }
-
-export interface ExpressApp {
-    expressApp  : express.Express;
-    name        : string ;
+export interface MultiAppUpdateOptions extends UpdateOptions {
+    subApplications: 'all' | 'none' | ApplicationRoute[];
 }
 
+
+export interface IApplicationContainer extends IApplication{
+    readonly subApplications: Record<string, IApplication>;
+    addSubApplication: (subApp: IApplication) => void;
+    update: (options: MultiAppUpdateOptions | UpdateOptions)=>Promise<void>;
+}
 export type AppServerData = AppData
+
 export interface INeuronFacApp {
     path: string ;
     port: number ;

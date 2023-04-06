@@ -51,7 +51,10 @@ describe(`Create new repos`, async ()=> {
             name: "test-repo1000",
             description: "test repo",
         });
-        expect(newRepo.name).to.equal(testRepoName);
+        if(newRepo instanceof Problem) {
+            expect(1).to.equal(2);
+        }
+        expect((newRepo as IGitRepository).name).to.equal(testRepoName);
    });
 });
 

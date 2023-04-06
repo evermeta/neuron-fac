@@ -26,20 +26,22 @@ export class NeuronFacApp extends ApplicationContainer implements INeuronFacApp{
         expressApp: express.Express, 
         applicationTopLevelPath: string,
         options:{
+            port: number,
             globalClientScript?: ()=>Promise<string>,
         } ) {
-                super("NeuronFac", ""); 
-                this.path = applicationTopLevelPath ;
-                this.expressApp = expressApp ; 
-                setupStack(this.expressApp, this.path);
-                this.globalClientScript = (options && options.globalClientScript) 
+             
+           super("NeuronFac", ""); 
+           this.path = applicationTopLevelPath ;
+           this.expressApp = expressApp ; 
+           setupStack(this.expressApp, this.path);
+           this.globalClientScript = (options && options.globalClientScript) 
                     ? options.globalClientScript
                     : null ;
         }  
 
-    public async start(port: number) {
-        this.expressApp.listen(port, () => {
-            console.log(`⚡️[server]: Server is running at https://localhost:${port}`);
+    public async start() {
+        this.expressApp.listen(this.port, () => {
+            console.log(`⚡️[server]: Server is running at https://localhost:${this.port}`);
         });
     }
 
@@ -64,5 +66,5 @@ export class NeuronFacApp extends ApplicationContainer implements INeuronFacApp{
             return {...globalServerData, ...subAppServerData};
         }
         return globalServerData;
-    };
+    }
 }
