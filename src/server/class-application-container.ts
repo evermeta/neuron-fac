@@ -5,10 +5,10 @@
  * ****************************************************************************/
 
 import { Application } from "./class-application";
-import { AppData, ApplicationRoute, ExecuteOptions, IApplication, IApplicationContainer, MultiAppUpdateOptions, UpdateOptions } from "./types";
+import { AppData, ApplicationRoute, ExecuteOptions, IApplication, MultiAppUpdateOptions, UpdateOptions, } from "./types";
 /******************************************************************************/
 
-export class ApplicationContainer extends Application implements IApplicationContainer {
+export class ApplicationContainer extends Application {
 
     public readonly subApplications: Record<string, IApplication>;
     public execute?: (command: string, options: ExecuteOptions)=>Promise<void>;
@@ -35,7 +35,7 @@ export class ApplicationContainer extends Application implements IApplicationCon
         this.subApplications[subApp.name] = subApp;
     }
 
-    public async data(route:string=""): Promise<AppData> {
+    public async data(route=""): Promise<AppData> {
         const appData: AppData = await super.data();
         if(this.subApplications[route]) {
             const subAppServerData = await this.subApplications[route].data();

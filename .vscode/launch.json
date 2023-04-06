@@ -7,13 +7,25 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Mocha Tests",
+            "name": "Tests - Virtual Developer",
             "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
             "args": [
                 "--require", "ts-node/register",
                 "--timeout", "999999",
                 "--colors", "--recursive",
-                "${workspaceFolder}/tests/src/utils/dialogflow/**/*.ts"
+                "${workspaceFolder}/tests/src/virtual-dev-tests/**/*.ts"
+            ]
+        },  
+          {
+            "type": "node",
+            "request": "launch",
+            "name": "Tests - Git utils",
+            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+            "args": [
+                "--require", "ts-node/register",
+                "--timeout", "999999",
+                "--colors", "--recursive",
+                "${workspaceFolder}/tests/src/utils/git/**/*.ts"
             ]
         },  
         {

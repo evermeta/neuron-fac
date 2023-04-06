@@ -1,7 +1,7 @@
 import express from "express";
 import path from "path";
 import { ApplicationContainer } from "./class-application-container";
-import { INeuronFacApp, IApplication } from "./types";
+import { IApplication, INeuronFacApp } from "./types";
 
 const setupStack = (expressApp: express.Express, applicationTopLevelPath: string) => {
     expressApp.use(express.json());
@@ -12,9 +12,13 @@ const setupStack = (expressApp: express.Express, applicationTopLevelPath: string
  };
       
 export class NeuronFacApp extends ApplicationContainer implements INeuronFacApp{
-    public expressApp      : express.Express ;
-    public path            : string ;
-    private subApps        : Record<string, IApplication> = {} ;
+
+    public expressApp: express.Express ;
+    public path: string ;
+    public port = 3000 ;
+
+    private subApps: Record<string, IApplication> = {} ;
+
     private executableApps : Record<string, (command: string, options: Record<string, unknown>)=>Promise<void>> = {} ;
     private globalClientScript: (()=>Promise<string>) | null;
 
@@ -22,20 +26,22 @@ export class NeuronFacApp extends ApplicationContainer implements INeuronFacApp{
         expressApp: express.Express, 
         applicationTopLevelPath: string,
         options:{
+            port: number,
             globalClientScript?: ()=>Promise<string>,
         } ) {
-                super("NeuronFac", ""); 
-                this.path = applicationTopLevelPath ;
-                this.expressApp = expressApp ; 
-                setupStack(this.expressApp, this.path);
-                this.globalClientScript = (options && options.globalClientScript) 
+             
+           super("NeuronFac", ""); 
+           this.path = applicationTopLevelPath ;
+           this.expressApp = expressApp ; 
+           setupStack(this.expressApp, this.path);
+           this.globalClientScript = (options && options.globalClientScript) 
                     ? options.globalClientScript
                     : null ;
         }  
 
-    public async start(port: number) {
-        this.expressApp.listen(port, () => {
-            console.log(`⚡️[server]: Server is running at https://localhost:${port}`);
+    public async start() {
+        this.expressApp.listen(this.port, () => {
+            console.log(`⚡️[server]: Server is running at https://localhost:${this.port}`);
         });
     }
 
@@ -55,10 +61,11 @@ export class NeuronFacApp extends ApplicationContainer implements INeuronFacApp{
             route,
             message: "Welcome to NeuronFac"
         };
+
         if(this.subApps[route]) {
             const subAppServerData = await this.subApps[route].data();
             return {...globalServerData, ...subAppServerData};
         }
         return globalServerData;
-    };
+    }
 }

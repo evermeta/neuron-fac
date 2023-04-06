@@ -16,7 +16,6 @@ const testProgram = (code: string)=>new Program(
     code);
 
 const programOne = testProgram("b*3");
-const programTwo = testProgram("b*c");
 
 describe("SpeciesPrototype class", () => {
 
