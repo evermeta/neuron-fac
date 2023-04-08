@@ -5,12 +5,9 @@ import { expect } from "chai";
 import { Configuration, CreateCompletionRequestPrompt, OpenAIApi } from "openai";
 import * as dotenv from 'dotenv' 
 import { joinStrings } from "../../../src/utils/strings/utils";
-import { getGPTProgram, makePrompt } from "../../../src/generative-AI/generating-chatGPT-programs";
 import { thisPage } from "../../../src/utils/process/types";
-import { Program } from "../../../src/gp/programs/program-class";
-import { ProgramArguments } from "../../../src/gp/types";
-import { jsCompiler } from "../../../src/gp/programs/compilers/jsCompiler";
-import { ExecProcess } from "../../../src/gp/programs/compilers/preprocessor-types";
+import { makePrompt, getGPTProgram } from "../../../src/generative-AI/generating-chatGPT-programs";
+import { VirtualDev } from "../../../src/virtual-dev/virtual-dev-types";
 /*******************************************************************************/
 dotenv.config();
 /*******************************************************************************/
@@ -22,6 +19,7 @@ const promptPrime = joinStrings("returns true if a is prime, false otherwise.")
 
 let openAiAPI: OpenAIApi;
 const pageName = thisPage();
+
 
 before(async () => {
     const configurationValues = {
@@ -52,7 +50,14 @@ before(async () => {
         }
       }*/
 });   
- 
+
+describe("The VirtualDev class", async () => {
+    it("Can be instantiated", async () => {
+        const va = new VirtualDev();
+        expect(va).to.be.an.instanceOf(VirtualDev);
+    });
+});
+
 describe (`${pageName} tests - The makePrompt function`, async () => { 
     
   let primeNumberJSCode: string[];
